@@ -101,7 +101,7 @@ Every module in AIForge passes through 12 engineering quality gates:
 ## 10-Phase Roadmap
 
 - [x] **Phase 1: Foundation** — Core FastAPI framework, Async PostgreSQL/SQLAlchemy 2.0, JWT + RBAC auth, Project/Dataset/Experiment tracking, Docker environment, automated tests.
-- [ ] **Phase 2: Classical ML Engine** — Classification, Regression, Anomaly Detection, Forecasting, MLflow Tracking, Model Serving.
+- [x] **Phase 2: Classical ML Engine** — Classification, Regression, Anomaly Detection, Forecasting, Automated Preprocessing, Model Registry, Real-time REST Inference Serving.
 - [ ] **Phase 3: Computer Vision Engine** — YOLO detection, ByteTrack tracking, OCR, frame extraction pipelines.
 - [ ] **Phase 4: NLP Pipeline** — Transformer embeddings, NER, text classification, semantic similarity.
 - [ ] **Phase 5: Enterprise RAG** — Document ingestion, semantic chunking, vector indexing, reranking, Ragas evaluation.
@@ -138,7 +138,7 @@ Every module in AIForge passes through 12 engineering quality gates:
 
 3. **Install dependencies:**
    ```bash
-   pip install -e ".[dev]"
+   pip install -r requirements.txt
    ```
 
 4. **Run the test suite:**
@@ -146,12 +146,17 @@ Every module in AIForge passes through 12 engineering quality gates:
    pytest
    ```
 
-5. **Start the API server:**
+5. **Run the Phase 2 Classical ML Demonstration:**
+   ```bash
+   python scripts/demo_phase2_ml.py
+   ```
+
+6. **Start the API server:**
    ```bash
    uvicorn apps.api.main:app --reload --port 8000
    ```
 
-6. **Explore interactive documentation:**
+7. **Explore interactive documentation:**
    - Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
    - ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
    - Health Check: [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
@@ -174,8 +179,10 @@ This boots up:
 - [ADR-002: Relational Metadata Storage with PostgreSQL, AsyncPG & SQLAlchemy 2.0](docs/adr/ADR-002-postgresql-sqlalchemy2-asyncpg.md)
 - [ADR-003: Stateless Authentication with JWT & Role-Based Access Control (RBAC)](docs/adr/ADR-003-jwt-rbac-security.md)
 - [ADR-004: Configuration & Secrets Management with Pydantic Settings](docs/adr/ADR-004-configuration-secrets-management.md)
+- [ADR-005: Unified Classical ML Pipeline & Estimator Interface](docs/adr/ADR-005-classical-ml-pipeline-architecture.md)
+- [ADR-006: Feature Store & Pipeline Serialization Strategy](docs/adr/ADR-006-feature-store-and-model-registry.md)
 
 ---
 
 ## License
-MIT License. Created with enterprise engineering standards by the AIForge Team.
+MIT License. Created with enterprise engineering standards by the OmniForge Team.
