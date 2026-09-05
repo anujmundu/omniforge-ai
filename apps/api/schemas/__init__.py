@@ -10,6 +10,16 @@ from apps.api.schemas.experiment import (
     ExperimentResponse,
 )
 from apps.api.schemas.artifact import ArtifactBase, ArtifactCreate, ArtifactResponse
+from apps.api.schemas.ml import (
+    InferenceRequest,
+    InferenceResponse,
+    ModelInfoResponse,
+    TrainAnomalyRequest,
+    TrainClassificationRequest,
+    TrainForecastingRequest,
+    TrainJobResponse,
+    TrainRegressionRequest,
+)
 
 __all__ = [
     "HealthResponse",
@@ -37,4 +47,12 @@ __all__ = [
     "ArtifactBase",
     "ArtifactCreate",
     "ArtifactResponse",
+    "TrainClassificationRequest",
+    "TrainRegressionRequest",
+    "TrainAnomalyRequest",
+    "TrainForecastingRequest",
+    "TrainJobResponse",
+    "InferenceRequest",
+    "InferenceResponse",
+    "ModelInfoResponse",
 ]
