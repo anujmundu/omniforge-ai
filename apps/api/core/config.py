@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
     # Core Application
     ENVIRONMENT: str = Field(default="development", description="Current environment mode")
-    PROJECT_NAME: str = Field(default="OmniForge Multimodal Platform", description="Platform name")
+    PROJECT_NAME: str = Field(default="OmniForge Multimodal Intelligence Platform", description="Platform name")
     API_V1_STR: str = "/api/v1"
     DEBUG: bool = Field(default=False)
     HOST: str = "0.0.0.0"
