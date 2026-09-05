@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     LOG_LEVEL: str = "INFO"
+    LOG_FILE: str = "logs/omniforge.log"
 
     # Security & JWT
     SECRET_KEY: str = Field(
