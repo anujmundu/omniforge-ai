@@ -16,6 +16,7 @@ from apps.api.routers import (
     health_router,
     ml_router,
     projects_router,
+    vision_router,
 )
 
 settings = get_settings()
@@ -88,6 +89,7 @@ def create_application() -> FastAPI:
     app.include_router(datasets_router, prefix=settings.API_V1_STR)
     app.include_router(experiments_router, prefix=settings.API_V1_STR)
     app.include_router(ml_router, prefix=settings.API_V1_STR)
+    app.include_router(vision_router, prefix=settings.API_V1_STR)
 
     @app.get("/", tags=["Root"])
     async def root() -> dict:

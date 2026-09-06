@@ -4,6 +4,7 @@ from apps.api.routers.projects import router as projects_router
 from apps.api.routers.datasets import router as datasets_router
 from apps.api.routers.experiments import router as experiments_router
 from apps.api.routers.ml import router as ml_router
+from apps.api.routers.vision import router as vision_router
 
 __all__ = [
     "health_router",
@@ -12,4 +13,5 @@ __all__ = [
     "datasets_router",
     "experiments_router",
     "ml_router",
+    "vision_router",
 ]
