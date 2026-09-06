@@ -102,7 +102,7 @@ Every module in AIForge passes through 12 engineering quality gates:
 
 - [x] **Phase 1: Foundation** — Core FastAPI framework, Async PostgreSQL/SQLAlchemy 2.0, JWT + RBAC auth, Project/Dataset/Experiment tracking, Docker environment, automated tests.
 - [x] **Phase 2: Classical ML Engine** — Classification, Regression, Anomaly Detection, Forecasting, Automated Preprocessing, Model Registry, Real-time REST Inference Serving.
-- [ ] **Phase 3: Computer Vision Engine** — YOLO detection, ByteTrack tracking, OCR, frame extraction pipelines.
+- [x] **Phase 3: Computer Vision Engine** — Object Detection (YOLO), Multi-Object Tracking (ByteTrack), Spatial OCR, Async Video Frame Stream Ingestion, and REST APIs.
 - [ ] **Phase 4: NLP Pipeline** — Transformer embeddings, NER, text classification, semantic similarity.
 - [ ] **Phase 5: Enterprise RAG** — Document ingestion, semantic chunking, vector indexing, reranking, Ragas evaluation.
 - [ ] **Phase 6: Multi-Agent Orchestrator** — Intent routing, tool calling (SQL, ML, Vision, RAG agents).
@@ -141,14 +141,21 @@ Every module in AIForge passes through 12 engineering quality gates:
    pip install -r requirements.txt
    ```
 
-4. **Run the test suite:**
+4. **Run the automated test suite (44 tests):**
    ```bash
    pytest
    ```
 
-5. **Run the Phase 2 Classical ML Demonstration:**
+5. **Run the Live Demonstrations:**
    ```bash
+   # Phase 1: End-to-End Foundation & RBAC Lifecycle
+   python scripts/demo_e2e_flow.py
+
+   # Phase 2: Classical ML Engine (4 Paradigms + Inference Serving)
    python scripts/demo_phase2_ml.py
+
+   # Phase 3: Computer Vision (Detection, Video Tracking, Spatial OCR, Streaming)
+   python scripts/demo_phase3_vision.py
    ```
 
 6. **Start the API server:**
