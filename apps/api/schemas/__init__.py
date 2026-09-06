@@ -20,6 +20,20 @@ from apps.api.schemas.ml import (
     TrainJobResponse,
     TrainRegressionRequest,
 )
+from apps.api.schemas.vision import (
+    BoundingBoxSchema,
+    DetectImageRequest,
+    DetectImageResponse,
+    DetectionItemSchema,
+    OCRRequest,
+    OCRResponse,
+    OCRSpanSchema,
+    TrackedObjectSchema,
+    TrackFrameResponse,
+    VideoTrackingRequest,
+    VideoTrackingResponse,
+    VisionModelInfoResponse,
+)
 
 __all__ = [
     "HealthResponse",
@@ -55,4 +69,16 @@ __all__ = [
     "InferenceRequest",
     "InferenceResponse",
     "ModelInfoResponse",
+    "BoundingBoxSchema",
+    "DetectImageRequest",
+    "DetectImageResponse",
+    "DetectionItemSchema",
+    "OCRRequest",
+    "OCRResponse",
+    "OCRSpanSchema",
+    "TrackedObjectSchema",
+    "TrackFrameResponse",
+    "VideoTrackingRequest",
+    "VideoTrackingResponse",
+    "VisionModelInfoResponse",
 ]
