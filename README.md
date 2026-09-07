@@ -103,7 +103,7 @@ Every module in AIForge passes through 12 engineering quality gates:
 - [x] **Phase 1: Foundation** — Core FastAPI framework, Async PostgreSQL/SQLAlchemy 2.0, JWT + RBAC auth, Project/Dataset/Experiment tracking, Docker environment, automated tests.
 - [x] **Phase 2: Classical ML Engine** — Classification, Regression, Anomaly Detection, Forecasting, Automated Preprocessing, Model Registry, Real-time REST Inference Serving.
 - [x] **Phase 3: Computer Vision Engine** — Object Detection (YOLO), Multi-Object Tracking (ByteTrack), Spatial OCR, Async Video Frame Stream Ingestion, and REST APIs.
-- [ ] **Phase 4: NLP Pipeline** — Transformer embeddings, NER, text classification, semantic similarity.
+- [x] **Phase 4: NLP Pipeline** — Dense Transformer Embeddings, Span-Level NER, Text Classification, Cross-Document Semantic Similarity, and REST APIs.
 - [ ] **Phase 5: Enterprise RAG** — Document ingestion, semantic chunking, vector indexing, reranking, Ragas evaluation.
 - [ ] **Phase 6: Multi-Agent Orchestrator** — Intent routing, tool calling (SQL, ML, Vision, RAG agents).
 - [ ] **Phase 7: MLOps & CI/CD** — DVC dataset versioning, MLflow stage promotion, automated release pipelines.
@@ -141,7 +141,7 @@ Every module in AIForge passes through 12 engineering quality gates:
    pip install -r requirements.txt
    ```
 
-4. **Run the automated test suite (44 tests):**
+4. **Run the automated test suite (58 tests):**
    ```bash
    pytest
    ```
@@ -156,6 +156,9 @@ Every module in AIForge passes through 12 engineering quality gates:
 
    # Phase 3: Computer Vision (Detection, Video Tracking, Spatial OCR, Streaming)
    python scripts/demo_phase3_vision.py
+
+   # Phase 4: NLP Pipeline (Embeddings, Span NER, Classification, Semantic Search)
+   python scripts/demo_phase4_nlp.py
    ```
 
 6. **Start the API server:**
