@@ -34,6 +34,21 @@ from apps.api.schemas.vision import (
     VideoTrackingResponse,
     VisionModelInfoResponse,
 )
+from apps.api.schemas.nlp import (
+    ClassificationPredictionSchema,
+    ClassifyRequest,
+    ClassifyResponse,
+    EmbedRequest,
+    EmbedResponse,
+    NamedEntitySpanSchema,
+    NERRequest,
+    NERResponse,
+    NLPModelInfoResponse,
+    RankedDocumentSchema,
+    SimilarityRequest,
+    SimilarityResponse,
+    TextEmbeddingItemSchema,
+)
 
 __all__ = [
     "HealthResponse",
@@ -81,4 +96,17 @@ __all__ = [
     "VideoTrackingRequest",
     "VideoTrackingResponse",
     "VisionModelInfoResponse",
+    "EmbedRequest",
+    "EmbedResponse",
+    "TextEmbeddingItemSchema",
+    "NERRequest",
+    "NERResponse",
+    "NamedEntitySpanSchema",
+    "ClassifyRequest",
+    "ClassifyResponse",
+    "ClassificationPredictionSchema",
+    "SimilarityRequest",
+    "SimilarityResponse",
+    "RankedDocumentSchema",
+    "NLPModelInfoResponse",
 ]
