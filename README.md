@@ -104,7 +104,7 @@ Every module in AIForge passes through 12 engineering quality gates:
 - [x] **Phase 2: Classical ML Engine** — Classification, Regression, Anomaly Detection, Forecasting, Automated Preprocessing, Model Registry, Real-time REST Inference Serving.
 - [x] **Phase 3: Computer Vision Engine** — Object Detection (YOLO), Multi-Object Tracking (ByteTrack), Spatial OCR, Async Video Frame Stream Ingestion, and REST APIs.
 - [x] **Phase 4: NLP Pipeline** — Dense Transformer Embeddings, Span-Level NER, Text Classification, Cross-Document Semantic Similarity, and REST APIs.
-- [ ] **Phase 5: Enterprise RAG** — Document ingestion, semantic chunking, vector indexing, reranking, Ragas evaluation.
+- [x] **Phase 5: Enterprise RAG Engine** — Document Ingestion (Markdown/JSON/HTML), Recursive Semantic Chunking, Dense Vector Store Collections, Cross-Encoder Reranking, Citation-Backed Q&A Generation, and Automated Evaluation.
 - [ ] **Phase 6: Multi-Agent Orchestrator** — Intent routing, tool calling (SQL, ML, Vision, RAG agents).
 - [ ] **Phase 7: MLOps & CI/CD** — DVC dataset versioning, MLflow stage promotion, automated release pipelines.
 - [ ] **Phase 8: Production Observability** — Prometheus metrics, Evidently data drift monitoring, Grafana dashboards.
@@ -141,7 +141,7 @@ Every module in AIForge passes through 12 engineering quality gates:
    pip install -r requirements.txt
    ```
 
-4. **Run the automated test suite (58 tests):**
+4. **Run the automated test suite (77 tests):**
    ```bash
    pytest
    ```
@@ -159,6 +159,9 @@ Every module in AIForge passes through 12 engineering quality gates:
 
    # Phase 4: NLP Pipeline (Embeddings, Span NER, Classification, Semantic Search)
    python scripts/demo_phase4_nlp.py
+
+   # Phase 5: Enterprise RAG Engine (Ingestion, Chunking, Vector Store, Reranker, Grounded Q&A)
+   python scripts/demo_phase5_rag.py
    ```
 
 6. **Start the API server:**
@@ -191,6 +194,12 @@ This boots up:
 - [ADR-004: Configuration & Secrets Management with Pydantic Settings](docs/adr/ADR-004-configuration-secrets-management.md)
 - [ADR-005: Unified Classical ML Pipeline & Estimator Interface](docs/adr/ADR-005-classical-ml-pipeline-architecture.md)
 - [ADR-006: Feature Store & Pipeline Serialization Strategy](docs/adr/ADR-006-feature-store-and-model-registry.md)
+- [ADR-007: Deep Learning Object Detection & Spatial Inference Architecture](docs/adr/ADR-007-deep-learning-object-detection-architecture.md)
+- [ADR-008: Real-Time Multi-Object Tracking & Video Frame Ingestion Architecture](docs/adr/ADR-008-real-time-multi-object-tracking-and-video-stream-architecture.md)
+- [ADR-009: Dense Text Embeddings & Dimensionality Reduction Architecture](docs/adr/ADR-009-dense-text-embeddings-and-dimensionality-architecture.md)
+- [ADR-010: Named Entity Recognition & Contextual Sequence Classification](docs/adr/ADR-010-named-entity-recognition-and-sequence-classification.md)
+- [ADR-011: Enterprise RAG Ingestion, Chunking & Parsing Architecture](docs/adr/ADR-011-enterprise-rag-ingestion-and-chunking-architecture.md)
+- [ADR-012: Hybrid Vector Retrieval & Cross-Encoder Reranking Architecture](docs/adr/ADR-012-hybrid-vector-retrieval-and-cross-encoder-reranking.md)
 
 ---
 
