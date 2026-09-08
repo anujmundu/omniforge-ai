@@ -49,6 +49,22 @@ from apps.api.schemas.nlp import (
     SimilarityResponse,
     TextEmbeddingItemSchema,
 )
+from apps.api.schemas.rag import (
+    CitationSchema,
+    CollectionInfoSchema,
+    DocumentChunkSchema,
+    DocumentInputSchema,
+    IndexDocumentsRequest,
+    IndexDocumentsResponse,
+    ListCollectionsResponse,
+    RAGEvaluateRequest,
+    RAGEvaluateResponse,
+    RAGQueryRequest,
+    RAGQueryResponse,
+    RetrievalItemSchema,
+    RetrieveRequest,
+    RetrieveResponse,
+)
 
 __all__ = [
     "HealthResponse",
@@ -109,4 +125,18 @@ __all__ = [
     "SimilarityResponse",
     "RankedDocumentSchema",
     "NLPModelInfoResponse",
+    "DocumentInputSchema",
+    "IndexDocumentsRequest",
+    "IndexDocumentsResponse",
+    "DocumentChunkSchema",
+    "RetrievalItemSchema",
+    "RetrieveRequest",
+    "RetrieveResponse",
+    "CitationSchema",
+    "RAGQueryRequest",
+    "RAGQueryResponse",
+    "RAGEvaluateRequest",
+    "RAGEvaluateResponse",
+    "CollectionInfoSchema",
+    "ListCollectionsResponse",
 ]
