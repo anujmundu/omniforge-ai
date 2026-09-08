@@ -17,6 +17,7 @@ from apps.api.routers import (
     ml_router,
     nlp_router,
     projects_router,
+    rag_router,
     vision_router,
 )
 
@@ -92,6 +93,7 @@ def create_application() -> FastAPI:
     app.include_router(ml_router, prefix=settings.API_V1_STR)
     app.include_router(vision_router, prefix=settings.API_V1_STR)
     app.include_router(nlp_router, prefix=settings.API_V1_STR)
+    app.include_router(rag_router, prefix=settings.API_V1_STR)
 
     @app.get("/", tags=["Root"])
     async def root() -> dict:
