@@ -65,6 +65,21 @@ from apps.api.schemas.rag import (
     RetrieveRequest,
     RetrieveResponse,
 )
+from apps.api.schemas.agents import (
+    AgentChatRequest,
+    AgentChatResponse,
+    AgentPlanSchema,
+    AgentPlanStepSchema,
+    AgentStepSchema,
+    DecomposePlanRequest,
+    DecomposePlanResponse,
+    ExecuteToolRequest,
+    ExecuteToolResponse,
+    ListToolsResponse,
+    ToolDefinitionSchema,
+    ToolExecutionResultSchema,
+    ToolParameterSchema,
+)
 
 __all__ = [
     "HealthResponse",
@@ -139,4 +154,17 @@ __all__ = [
     "RAGEvaluateResponse",
     "CollectionInfoSchema",
     "ListCollectionsResponse",
+    "AgentChatRequest",
+    "AgentChatResponse",
+    "AgentPlanSchema",
+    "AgentPlanStepSchema",
+    "AgentStepSchema",
+    "DecomposePlanRequest",
+    "DecomposePlanResponse",
+    "ExecuteToolRequest",
+    "ExecuteToolResponse",
+    "ListToolsResponse",
+    "ToolDefinitionSchema",
+    "ToolExecutionResultSchema",
+    "ToolParameterSchema",
 ]
