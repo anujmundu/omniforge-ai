@@ -7,6 +7,7 @@ from apps.api.routers.ml import router as ml_router
 from apps.api.routers.vision import router as vision_router
 from apps.api.routers.nlp import router as nlp_router
 from apps.api.routers.rag import router as rag_router
+from apps.api.routers.agents import router as agents_router
 
 __all__ = [
     "health_router",
@@ -18,4 +19,5 @@ __all__ = [
     "vision_router",
     "nlp_router",
     "rag_router",
+    "agents_router",
 ]
