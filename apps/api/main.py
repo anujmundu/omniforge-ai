@@ -10,6 +10,7 @@ from apps.api.core.database import init_db
 from apps.api.core.logging_config import setup_logging
 from apps.api.middleware.request_id import RequestTimingAndCorrelationMiddleware
 from apps.api.routers import (
+    agents_router,
     auth_router,
     datasets_router,
     experiments_router,
@@ -94,6 +95,7 @@ def create_application() -> FastAPI:
     app.include_router(vision_router, prefix=settings.API_V1_STR)
     app.include_router(nlp_router, prefix=settings.API_V1_STR)
     app.include_router(rag_router, prefix=settings.API_V1_STR)
+    app.include_router(agents_router, prefix=settings.API_V1_STR)
 
     @app.get("/", tags=["Root"])
     async def root() -> dict:
