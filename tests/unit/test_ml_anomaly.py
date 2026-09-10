@@ -1,7 +1,9 @@
 import tempfile
+
 import numpy as np
 import pandas as pd
 import pytest
+
 from ml.anomaly.engine import AnomalyEngine
 from ml.base import TaskType
 
@@ -15,11 +17,13 @@ def synthetic_transaction_data():
     anomalous_amounts = np.random.uniform(500, 1000, size=5)
     amounts = np.concatenate([normal_amounts, anomalous_amounts])
 
-    df = pd.DataFrame({
-        "amount": amounts,
-        "tx_count_1h": np.random.randint(1, 5, size=n),
-        "location": np.random.choice(["Domestic", "International"], size=n),
-    })
+    df = pd.DataFrame(
+        {
+            "amount": amounts,
+            "tx_count_1h": np.random.randint(1, 5, size=n),
+            "location": np.random.choice(["Domestic", "International"], size=n),
+        }
+    )
     return df
 
 

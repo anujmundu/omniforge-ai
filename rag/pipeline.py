@@ -5,7 +5,8 @@ End-to-End Enterprise RAG Pipeline unifying Ingestion, Retrieval, Reranking, and
 from __future__ import annotations
 
 import time
-from typing import Dict, List, Optional
+from typing import List, Optional
+
 from nlp.embeddings import TransformerEmbeddingEngine
 from rag.base import (
     BaseRAGPipeline,
@@ -76,7 +77,7 @@ class EnterpriseRAGPipeline(BaseRAGPipeline):
 
         if rerank:
             return self.reranker.rerank(query=query, candidate_chunks=initial_matches, top_k=top_k)
-        
+
         return initial_matches[:top_k]
 
     def query(
@@ -117,7 +118,7 @@ class EnterpriseRAGPipeline(BaseRAGPipeline):
                 relevance_score=result.rerank_score or result.similarity_score,
             )
             citations.append(citation)
-            
+
             # Grounded summary paragraph with citation marker
             summary_sentence = chunk.text.split(".")[0] if "." in chunk.text else chunk.text
             answer_paragraphs.append(f"{summary_sentence.strip()} [{idx}].")

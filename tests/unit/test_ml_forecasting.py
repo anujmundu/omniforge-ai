@@ -1,7 +1,9 @@
 import tempfile
+
 import numpy as np
 import pandas as pd
 import pytest
+
 from ml.base import TaskType
 from ml.forecasting.engine import ForecastingEngine
 
@@ -16,10 +18,12 @@ def synthetic_demand_series():
     values = trend + seasonality + noise
 
     dates = pd.date_range(start="2026-01-01", periods=n, freq="D")
-    df = pd.DataFrame({
-        "timestamp": dates,
-        "demand": values,
-    })
+    df = pd.DataFrame(
+        {
+            "timestamp": dates,
+            "demand": values,
+        }
+    )
     return df
 
 

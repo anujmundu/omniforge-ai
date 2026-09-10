@@ -5,7 +5,7 @@ Domain Specialist Agents for OmniForge Multi-Agent Intelligence Mesh.
 from __future__ import annotations
 
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from agents.base import (
     AgentAction,
@@ -90,14 +90,20 @@ class VisionAnalyticsAgent(BaseAgent):
 
         if "ocr" in q_lower or "invoice" in q_lower or "text" in q_lower or "document" in q_lower:
             thought = "Visual document analysis requested. Invoking vision_ocr_extract tool."
-            action = AgentAction(tool_name="vision_ocr_extract", arguments={"document_uri": (context or {}).get("uri", "doc://invoice_01.png")})
+            action = AgentAction(
+                tool_name="vision_ocr_extract",
+                arguments={"document_uri": (context or {}).get("uri", "doc://invoice_01.png")},
+            )
             tool_res = self.tools.execute("vision_ocr_extract", action.arguments)
             obs = AgentObservation(output=tool_res.output, error=tool_res.error, success=tool_res.success)
             step = AgentStep(step_index=1, thought=thought, action=action, observation=obs)
             ans = f"Spatial OCR Extraction complete: Document '{tool_res.output.get('structured_fields', {}).get('document_id')}' extracted with amount ${tool_res.output.get('structured_fields', {}).get('total_amount_usd'):,.2f}."
         else:
             thought = "Object detection requested. Invoking vision_detect_objects tool."
-            action = AgentAction(tool_name="vision_detect_objects", arguments={"image_uri": (context or {}).get("uri", "img://frame_01.jpg")})
+            action = AgentAction(
+                tool_name="vision_detect_objects",
+                arguments={"image_uri": (context or {}).get("uri", "img://frame_01.jpg")},
+            )
             tool_res = self.tools.execute("vision_detect_objects", action.arguments)
             obs = AgentObservation(output=tool_res.output, error=tool_res.error, success=tool_res.success)
             step = AgentStep(step_index=1, thought=thought, action=action, observation=obs)

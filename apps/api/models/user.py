@@ -1,13 +1,15 @@
 import enum
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
+
 from sqlalchemy import Boolean, Enum, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from apps.api.core.database import Base
 from apps.api.models.base import TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
-    from apps.api.models.project import Project
     from apps.api.models.audit_log import AuditLog
+    from apps.api.models.project import Project
 
 
 class UserRole(str, enum.Enum):
@@ -19,6 +21,7 @@ class UserRole(str, enum.Enum):
 
 class User(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     """User account entity with Role-Based Access Control (RBAC)."""
+
     __tablename__ = "users"
 
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)

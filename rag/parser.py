@@ -9,6 +9,7 @@ import json
 import re
 import time
 from typing import Any, Dict, List, Optional
+
 from rag.base import BaseDocumentParser, Document
 
 
@@ -54,12 +55,14 @@ class DocumentParser(BaseDocumentParser):
             content_hash = hashlib.sha256(f"{title}_{cleaned_content}".encode("utf-8")).hexdigest()[:16]
             doc_id = f"doc_{content_hash}"
 
-        doc_metadata.update({
-            "word_count": len(cleaned_content.split()),
-            "char_count": len(cleaned_content),
-            "parsed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "source_type": "text",
-        })
+        doc_metadata.update(
+            {
+                "word_count": len(cleaned_content.split()),
+                "char_count": len(cleaned_content),
+                "parsed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "source_type": "text",
+            }
+        )
 
         return Document(
             doc_id=doc_id,
@@ -99,18 +102,24 @@ class DocumentParser(BaseDocumentParser):
         tables: List[Dict[str, Any]] = []
         lines = cleaned_content.splitlines()
         for idx, line in enumerate(lines):
-            if "|" in line and idx + 1 < len(lines) and ("|---" in lines[idx + 1] or "|:--" in lines[idx + 1] or "| :--" in lines[idx + 1]):
+            if (
+                "|" in line
+                and idx + 1 < len(lines)
+                and ("|---" in lines[idx + 1] or "|:--" in lines[idx + 1] or "| :--" in lines[idx + 1])
+            ):
                 headers = [col.strip() for col in line.split("|") if col.strip()]
                 tables.append({"line_index": idx, "headers": headers})
 
-        doc_metadata.update({
-            "sections": sections,
-            "tables": tables,
-            "word_count": len(cleaned_content.split()),
-            "char_count": len(cleaned_content),
-            "parsed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "source_type": "markdown",
-        })
+        doc_metadata.update(
+            {
+                "sections": sections,
+                "tables": tables,
+                "word_count": len(cleaned_content.split()),
+                "char_count": len(cleaned_content),
+                "parsed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "source_type": "markdown",
+            }
+        )
 
         if not doc_id:
             content_hash = hashlib.sha256(f"{extracted_title}_{cleaned_content}".encode("utf-8")).hexdigest()[:16]
@@ -147,13 +156,15 @@ class DocumentParser(BaseDocumentParser):
         except Exception:
             pass
 
-        doc_metadata.update({
-            "keys": extracted_keys,
-            "word_count": len(cleaned_content.split()),
-            "char_count": len(cleaned_content),
-            "parsed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "source_type": "json",
-        })
+        doc_metadata.update(
+            {
+                "keys": extracted_keys,
+                "word_count": len(cleaned_content.split()),
+                "char_count": len(cleaned_content),
+                "parsed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "source_type": "json",
+            }
+        )
 
         if not doc_id:
             content_hash = hashlib.sha256(f"{title}_{cleaned_content}".encode("utf-8")).hexdigest()[:16]
@@ -189,12 +200,14 @@ class DocumentParser(BaseDocumentParser):
         text_content = re.sub(r"<[^>]+>", " ", html_content)
         text_content = re.sub(r"\s+", " ", text_content).strip()
 
-        doc_metadata.update({
-            "word_count": len(text_content.split()),
-            "char_count": len(text_content),
-            "parsed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "source_type": "html",
-        })
+        doc_metadata.update(
+            {
+                "word_count": len(text_content.split()),
+                "char_count": len(text_content),
+                "parsed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "source_type": "html",
+            }
+        )
 
         if not doc_id:
             content_hash = hashlib.sha256(f"{extracted_title}_{text_content}".encode("utf-8")).hexdigest()[:16]

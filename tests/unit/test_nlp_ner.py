@@ -2,7 +2,6 @@
 Unit tests for Named Entity Recognition (NER).
 """
 
-import pytest
 from nlp.ner import NamedEntityRecognizer
 
 
@@ -17,7 +16,7 @@ def test_ner_exact_character_span_offsets():
 
     # Verify character indexing integrity: text[start:end] == span.text
     for span in result.entities:
-        sliced_text = text[span.start_char:span.end_char]
+        sliced_text = text[span.start_char : span.end_char]
         assert sliced_text == span.text, f"Offset mismatch: expected '{span.text}', got '{sliced_text}'"
         assert span.confidence >= 0.5
 
@@ -31,5 +30,5 @@ def test_ner_entity_types():
 
     assert "ORG" in labels  # Microsoft
     assert "GPE" in labels  # London
-    assert "DATE" in labels # March 20
-    assert "TECH_STACK" in labels # PostgreSQL
+    assert "DATE" in labels  # March 20
+    assert "TECH_STACK" in labels  # PostgreSQL

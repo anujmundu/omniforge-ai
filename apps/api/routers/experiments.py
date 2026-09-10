@@ -1,7 +1,9 @@
 from typing import Any, List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from apps.api.core.database import get_db_session
 from apps.api.core.dependencies import get_current_user, require_roles
 from apps.api.models.artifact import Artifact
@@ -26,9 +28,7 @@ router = APIRouter(prefix="/experiments", tags=["Experiments & Model Tracking"])
 )
 async def create_experiment(
     experiment_in: ExperimentCreate,
-    current_user: User = Depends(
-        require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)
-    ),
+    current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)),
     db: AsyncSession = Depends(get_db_session),
 ) -> Any:
     project_stmt = select(Project).where(Project.id == experiment_in.project_id)
@@ -110,9 +110,7 @@ async def get_experiment(
 async def update_experiment(
     experiment_id: str,
     update_in: ExperimentUpdate,
-    current_user: User = Depends(
-        require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)
-    ),
+    current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)),
     db: AsyncSession = Depends(get_db_session),
 ) -> Any:
     stmt = select(Experiment).where(Experiment.id == experiment_id)
@@ -155,9 +153,7 @@ async def update_experiment(
 async def register_artifact(
     experiment_id: str,
     artifact_in: ArtifactCreate,
-    current_user: User = Depends(
-        require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)
-    ),
+    current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)),
     db: AsyncSession = Depends(get_db_session),
 ) -> Any:
     stmt = select(Experiment).where(Experiment.id == experiment_id)

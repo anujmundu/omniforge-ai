@@ -1,6 +1,7 @@
 import os
-import pytest
 from typing import AsyncGenerator, Dict
+
+import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -62,6 +63,7 @@ async def db_session() -> AsyncGenerator[AsyncSession, None]:
 @pytest.fixture
 async def client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
     """Async HTTP client with overridden DB session dependency."""
+
     async def override_get_db():
         yield db_session
 

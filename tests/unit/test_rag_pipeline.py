@@ -3,6 +3,7 @@ Unit tests for End-to-End Enterprise RAG Pipeline (Ingestion -> Retrieval -> Gen
 """
 
 import pytest
+
 from rag.base import Document
 from rag.pipeline import EnterpriseRAGPipeline
 

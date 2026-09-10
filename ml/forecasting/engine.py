@@ -1,12 +1,12 @@
 import json
-import os
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
+
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
+from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 from ml.base import BaseMLEstimator, ModelEvaluationResult, TaskType
@@ -169,7 +169,7 @@ class ForecastingEngine(BaseMLEstimator):
         rmse = float(np.sqrt(mean_squared_error(y_true, y_pred)))
         mae = float(mean_absolute_error(y_true, y_pred))
         r2 = float(r2_score(y_true, y_pred))
-        
+
         # Weighted Absolute Percentage Error (WAPE)
         wape = float(np.sum(np.abs(y_true - y_pred)) / max(np.sum(np.abs(y_true)), 1e-6))
 

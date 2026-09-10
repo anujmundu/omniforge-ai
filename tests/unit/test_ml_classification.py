@@ -1,7 +1,9 @@
 import tempfile
+
 import numpy as np
 import pandas as pd
 import pytest
+
 from ml.base import TaskType
 from ml.classification.engine import ClassificationEngine
 
@@ -10,12 +12,14 @@ from ml.classification.engine import ClassificationEngine
 def synthetic_churn_data():
     np.random.seed(42)
     n = 100
-    df = pd.DataFrame({
-        "tenure": np.random.randint(1, 72, size=n),
-        "monthly_charges": np.random.uniform(20, 120, size=n),
-        "contract": np.random.choice(["Month-to-month", "One year", "Two year"], size=n),
-        "tech_support": np.random.choice(["Yes", "No"], size=n),
-    })
+    df = pd.DataFrame(
+        {
+            "tenure": np.random.randint(1, 72, size=n),
+            "monthly_charges": np.random.uniform(20, 120, size=n),
+            "contract": np.random.choice(["Month-to-month", "One year", "Two year"], size=n),
+            "tech_support": np.random.choice(["Yes", "No"], size=n),
+        }
+    )
     # Target correlated with tenure and contract
     churn = ((df["tenure"] < 20) & (df["contract"] == "Month-to-month")).astype(int)
     return df, churn

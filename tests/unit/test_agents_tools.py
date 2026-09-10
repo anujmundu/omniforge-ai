@@ -2,8 +2,7 @@
 Unit tests for Declarative Tool Calling (@tool), ToolRegistry, and execution safety.
 """
 
-import pytest
-from agents.tools import FunctionTool, ToolRegistry, tool
+from agents.tools import ToolRegistry, tool
 
 
 def test_tool_decorator_introspection():

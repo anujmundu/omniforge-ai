@@ -82,9 +82,7 @@ async def test_rag_evaluate_endpoint(client: AsyncClient, engineer_headers: dict
     eval_payload = {
         "query": "What is FastAPI used for?",
         "generated_answer": "FastAPI provides asynchronous request handling [1].",
-        "retrieved_chunk_texts": [
-            "FastAPI provides asynchronous request handling with Pydantic schema validation."
-        ],
+        "retrieved_chunk_texts": ["FastAPI provides asynchronous request handling with Pydantic schema validation."],
         "ground_truth_answer": "FastAPI handles asynchronous web requests.",
     }
     res = await client.post("/api/v1/rag/evaluate", json=eval_payload, headers=engineer_headers)

@@ -1,8 +1,8 @@
 import json
-import os
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Union
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -16,7 +16,7 @@ from sklearn.metrics import (
     recall_score,
     roc_auc_score,
 )
-from sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split
+from sklearn.model_selection import train_test_split
 
 from ml.base import BaseMLEstimator, ModelEvaluationResult, TaskType
 from ml.preprocessing.pipeline import AutoColumnTransformer
@@ -158,9 +158,7 @@ class ClassificationEngine(BaseMLEstimator):
             names = self.preprocessor.transformed_feature_names
             if len(names) == len(importances):
                 sorted_idx = np.argsort(importances)[::-1][:15]
-                feature_importance = {
-                    names[i]: round(float(importances[i]), 4) for i in sorted_idx
-                }
+                feature_importance = {names[i]: round(float(importances[i]), 4) for i in sorted_idx}
 
         metrics = {
             "accuracy": round(acc, 4),

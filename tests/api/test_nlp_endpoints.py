@@ -19,11 +19,8 @@ async def test_get_nlp_models(client: AsyncClient, admin_headers: dict):
 @pytest.mark.asyncio
 async def test_embed_endpoint(client: AsyncClient, engineer_headers: dict):
     payload = {
-        "texts": [
-            "OmniForge intelligence platform",
-            "Real-time multimodal artificial intelligence"
-        ],
-        "dimension": 384
+        "texts": ["OmniForge intelligence platform", "Real-time multimodal artificial intelligence"],
+        "dimension": 384,
     }
     response = await client.post("/api/v1/nlp/embed", json=payload, headers=engineer_headers)
     assert response.status_code == 200
@@ -38,7 +35,7 @@ async def test_embed_endpoint(client: AsyncClient, engineer_headers: dict):
 async def test_ner_endpoint(client: AsyncClient, engineer_headers: dict):
     payload = {
         "text": "Satya Nadella spoke at Microsoft headquarters in Seattle on October 10.",
-        "min_confidence": 0.50
+        "min_confidence": 0.50,
     }
     response = await client.post("/api/v1/nlp/ner", json=payload, headers=engineer_headers)
     assert response.status_code == 200
@@ -53,7 +50,7 @@ async def test_ner_endpoint(client: AsyncClient, engineer_headers: dict):
 async def test_classify_endpoint(client: AsyncClient, engineer_headers: dict):
     payload = {
         "text": "The platform architecture is exceptionally well-designed and reliable.",
-        "candidate_labels": ["POSITIVE", "NEUTRAL", "NEGATIVE"]
+        "candidate_labels": ["POSITIVE", "NEUTRAL", "NEGATIVE"],
     }
     response = await client.post("/api/v1/nlp/classify", json=payload, headers=engineer_headers)
     assert response.status_code == 200
@@ -70,9 +67,9 @@ async def test_similarity_endpoint(client: AsyncClient, engineer_headers: dict):
         "documents": [
             "Training neural networks on GPU clusters",
             "Cooking pasta with tomato sauce recipe",
-            "Deep learning inference acceleration"
+            "Deep learning inference acceleration",
         ],
-        "top_k": 2
+        "top_k": 2,
     }
     response = await client.post("/api/v1/nlp/similarity", json=payload, headers=engineer_headers)
     assert response.status_code == 200

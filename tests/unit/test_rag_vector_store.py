@@ -3,6 +3,7 @@ Unit tests for InMemoryVectorStore collections, dense indexing, and cosine searc
 """
 
 import pytest
+
 from rag.base import DocumentChunk
 from rag.vector_store import InMemoryVectorStore
 
@@ -98,7 +99,9 @@ def test_metadata_filtering(vector_store):
 
 def test_list_collections_and_clear(vector_store):
     chunks = [
-        DocumentChunk(chunk_id="c1", doc_id="d1", title="T", text="Sample text", chunk_index=0, start_char=0, end_char=11)
+        DocumentChunk(
+            chunk_id="c1", doc_id="d1", title="T", text="Sample text", chunk_index=0, start_char=0, end_char=11
+        )
     ]
     vector_store.add_chunks("coll_a", chunks)
     vector_store.add_chunks("coll_b", chunks)

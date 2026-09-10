@@ -5,7 +5,8 @@ NLP API Router for Embeddings, Named Entity Recognition, Classification, and Sem
 from __future__ import annotations
 
 from typing import Any
-from fastapi import APIRouter, Depends, status
+
+from fastapi import APIRouter, Depends
 
 from apps.api.core.dependencies import get_current_user
 from apps.api.models.user import User
@@ -84,7 +85,7 @@ async def generate_embeddings(
     Generate dense vector embeddings for input strings.
     """
     batch_res = _embedder.embed_batch(request.texts)
-    
+
     embeddings = [
         TextEmbeddingItemSchema(
             text=e.text,
@@ -150,10 +151,7 @@ async def classify_text(
         candidate_labels=request.candidate_labels,
     )
 
-    probs = [
-        ClassificationPredictionSchema(label=p.label, score=p.score)
-        for p in result.probabilities
-    ]
+    probs = [ClassificationPredictionSchema(label=p.label, score=p.score) for p in result.probabilities]
 
     return ClassifyResponse(
         source_text=result.source_text,

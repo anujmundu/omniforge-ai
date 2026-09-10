@@ -1,8 +1,9 @@
 import time
 from typing import Any, List
-from fastapi import APIRouter, Depends, HTTPException, status
+
 import numpy as np
 import pandas as pd
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,8 +27,8 @@ from ml.anomaly.engine import AnomalyEngine
 from ml.base import TaskType
 from ml.classification.engine import ClassificationEngine
 from ml.forecasting.engine import ForecastingEngine
-from ml.regression.engine import RegressionEngine
 from ml.registry import registry
+from ml.regression.engine import RegressionEngine
 
 router = APIRouter(prefix="/ml", tags=["Classical Machine Learning Engine"])
 
@@ -40,9 +41,7 @@ router = APIRouter(prefix="/ml", tags=["Classical Machine Learning Engine"])
 )
 async def train_classification(
     req: TrainClassificationRequest,
-    current_user: User = Depends(
-        require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)
-    ),
+    current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)),
     db: AsyncSession = Depends(get_db_session),
 ) -> Any:
     # 1. Verify project exists
@@ -112,9 +111,7 @@ async def train_classification(
 )
 async def train_regression(
     req: TrainRegressionRequest,
-    current_user: User = Depends(
-        require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)
-    ),
+    current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)),
     db: AsyncSession = Depends(get_db_session),
 ) -> Any:
     proj_stmt = select(Project).where(Project.id == req.project_id)
@@ -172,9 +169,7 @@ async def train_regression(
 )
 async def train_anomaly(
     req: TrainAnomalyRequest,
-    current_user: User = Depends(
-        require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)
-    ),
+    current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)),
     db: AsyncSession = Depends(get_db_session),
 ) -> Any:
     proj_stmt = select(Project).where(Project.id == req.project_id)
@@ -224,9 +219,7 @@ async def train_anomaly(
 )
 async def train_forecasting(
     req: TrainForecastingRequest,
-    current_user: User = Depends(
-        require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)
-    ),
+    current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)),
     db: AsyncSession = Depends(get_db_session),
 ) -> Any:
     proj_stmt = select(Project).where(Project.id == req.project_id)
@@ -301,7 +294,14 @@ async def predict(
         anomaly_scores = [float(s) for s in scores]
     else:
         preds = model.predict(df)
-        predictions = [float(p) if isinstance(p, (np.floating, float)) else (int(p) if isinstance(p, (np.integer, int)) else str(p)) for p in preds]
+        predictions = [
+            (
+                float(p)
+                if isinstance(p, (np.floating, float))
+                else (int(p) if isinstance(p, (np.integer, int)) else str(p))
+            )
+            for p in preds
+        ]
         if hasattr(model, "predict_proba"):
             try:
                 probs = model.predict_proba(df)

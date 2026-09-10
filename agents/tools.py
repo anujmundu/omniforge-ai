@@ -4,7 +4,6 @@ Declarative Tool Calling Framework and Central Tool Registry for OmniForge Agent
 
 from __future__ import annotations
 
-import functools
 import inspect
 import time
 from typing import Any, Callable, Dict, List, Optional, get_type_hints
@@ -125,6 +124,7 @@ def tool(
     """
     Decorator declaring a Python function as an agent-executable Tool.
     """
+
     def decorator(func: Callable[..., Any]) -> FunctionTool:
         tool_obj = FunctionTool(func, name=name, description=description, category=category)
         ToolRegistry.get_instance().register(tool_obj)
@@ -174,6 +174,7 @@ class ToolRegistry:
 # ==============================================================================
 # Built-in Standard Tool Library for OmniForge Agents
 # ==============================================================================
+
 
 @tool(
     name="ml_predict",
@@ -266,6 +267,7 @@ def nlp_extract_entities(
 ) -> Dict[str, Any]:
     """Extract named entities from raw text."""
     from nlp.ner import NamedEntityRecognizer
+
     ner = NamedEntityRecognizer()
     res = ner.extract_entities(text=text, min_confidence=min_confidence)
     return {

@@ -2,7 +2,6 @@
 Unit tests for RAGEvaluator metrics (Faithfulness, Relevance, Context Precision).
 """
 
-import pytest
 from rag.base import DocumentChunk, RetrievalResult
 from rag.evaluator import RAGEvaluator
 

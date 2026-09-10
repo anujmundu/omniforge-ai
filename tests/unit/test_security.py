@@ -1,5 +1,7 @@
-import pytest
 from datetime import timedelta
+
+import pytest
+
 from apps.api.core.security import (
     create_access_token,
     create_refresh_token,

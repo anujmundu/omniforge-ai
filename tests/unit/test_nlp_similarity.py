@@ -3,6 +3,7 @@ Unit tests for semantic similarity engine and top-K search.
 """
 
 import pytest
+
 from nlp.similarity import SemanticSimilarityEngine
 
 

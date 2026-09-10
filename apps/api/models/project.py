@@ -1,17 +1,20 @@
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional
+
 from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from apps.api.core.database import Base
 from apps.api.models.base import TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
-    from apps.api.models.user import User
     from apps.api.models.dataset import Dataset
     from apps.api.models.experiment import Experiment
+    from apps.api.models.user import User
 
 
 class Project(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     """Project workspace grouping datasets and experiments."""
+
     __tablename__ = "projects"
 
     name: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -22,4 +25,6 @@ class Project(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     # Relationships
     owner: Mapped["User"] = relationship("User", back_populates="projects")
     datasets: Mapped[List["Dataset"]] = relationship("Dataset", back_populates="project", cascade="all, delete-orphan")
-    experiments: Mapped[List["Experiment"]] = relationship("Experiment", back_populates="project", cascade="all, delete-orphan")
+    experiments: Mapped[List["Experiment"]] = relationship(
+        "Experiment", back_populates="project", cascade="all, delete-orphan"
+    )

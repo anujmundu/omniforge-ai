@@ -7,7 +7,8 @@ from __future__ import annotations
 
 import io
 import time
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple
+
 import numpy as np
 from PIL import Image
 
@@ -22,16 +23,86 @@ class ObjectDetector(BaseDetector):
     """
 
     COCO_CLASSES = [
-        "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat",
-        "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
-        "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack",
-        "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball",
-        "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket",
-        "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
-        "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair",
-        "couch", "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse",
-        "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink",
-        "refrigerator", "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "airplane",
+        "bus",
+        "train",
+        "truck",
+        "boat",
+        "traffic light",
+        "fire hydrant",
+        "stop sign",
+        "parking meter",
+        "bench",
+        "bird",
+        "cat",
+        "dog",
+        "horse",
+        "sheep",
+        "cow",
+        "elephant",
+        "bear",
+        "zebra",
+        "giraffe",
+        "backpack",
+        "umbrella",
+        "handbag",
+        "tie",
+        "suitcase",
+        "frisbee",
+        "skis",
+        "snowboard",
+        "sports ball",
+        "kite",
+        "baseball bat",
+        "baseball glove",
+        "skateboard",
+        "surfboard",
+        "tennis racket",
+        "bottle",
+        "wine glass",
+        "cup",
+        "fork",
+        "knife",
+        "spoon",
+        "bowl",
+        "banana",
+        "apple",
+        "sandwich",
+        "orange",
+        "broccoli",
+        "carrot",
+        "hot dog",
+        "pizza",
+        "donut",
+        "cake",
+        "chair",
+        "couch",
+        "potted plant",
+        "bed",
+        "dining table",
+        "toilet",
+        "tv",
+        "laptop",
+        "mouse",
+        "remote",
+        "keyboard",
+        "cell phone",
+        "microwave",
+        "oven",
+        "toaster",
+        "sink",
+        "refrigerator",
+        "book",
+        "clock",
+        "vase",
+        "scissors",
+        "teddy bear",
+        "hair drier",
+        "toothbrush",
     ]
 
     def __init__(
@@ -149,7 +220,7 @@ class ObjectDetector(BaseDetector):
         Generates realistic, deterministic detections derived from image dimensions and pixel content.
         """
         dets: List[Detection] = []
-        
+
         # Derive pseudo-random but deterministic detections from image statistics
         mean_brightness = float(np.mean(img_arr)) / 255.0
 
@@ -159,57 +230,78 @@ class ObjectDetector(BaseDetector):
         p1_xmax = 0.45
         p1_ymax = 0.85
         conf_p1 = min(0.98, max(0.65, 0.75 + 0.2 * (mean_brightness - 0.5)))
-        
-        dets.append(Detection(
-            label="person",
-            confidence=round(conf_p1, 3),
-            box=BoundingBox(
-                xmin=p1_xmin,
-                ymin=p1_ymin,
-                xmax=p1_xmax,
-                ymax=p1_ymax,
-                pixel_box=(int(p1_xmin * width), int(p1_ymin * height), int(p1_xmax * width), int(p1_ymax * height))
-            ),
-            class_id=0,
-            metadata={"source": "simulated_vision_engine"}
-        ))
+
+        dets.append(
+            Detection(
+                label="person",
+                confidence=round(conf_p1, 3),
+                box=BoundingBox(
+                    xmin=p1_xmin,
+                    ymin=p1_ymin,
+                    xmax=p1_xmax,
+                    ymax=p1_ymax,
+                    pixel_box=(
+                        int(p1_xmin * width),
+                        int(p1_ymin * height),
+                        int(p1_xmax * width),
+                        int(p1_ymax * height),
+                    ),
+                ),
+                class_id=0,
+                metadata={"source": "simulated_vision_engine"},
+            )
+        )
 
         # Pattern 2: Laptop / Desk equipment
         p2_xmin = 0.40
         p2_ymin = 0.50
         p2_xmax = 0.75
         p2_ymax = 0.90
-        dets.append(Detection(
-            label="laptop",
-            confidence=0.885,
-            box=BoundingBox(
-                xmin=p2_xmin,
-                ymin=p2_ymin,
-                xmax=p2_xmax,
-                ymax=p2_ymax,
-                pixel_box=(int(p2_xmin * width), int(p2_ymin * height), int(p2_xmax * width), int(p2_ymax * height))
-            ),
-            class_id=63,
-            metadata={"source": "simulated_vision_engine"}
-        ))
+        dets.append(
+            Detection(
+                label="laptop",
+                confidence=0.885,
+                box=BoundingBox(
+                    xmin=p2_xmin,
+                    ymin=p2_ymin,
+                    xmax=p2_xmax,
+                    ymax=p2_ymax,
+                    pixel_box=(
+                        int(p2_xmin * width),
+                        int(p2_ymin * height),
+                        int(p2_xmax * width),
+                        int(p2_ymax * height),
+                    ),
+                ),
+                class_id=63,
+                metadata={"source": "simulated_vision_engine"},
+            )
+        )
 
         # Pattern 3: Cell phone
         p3_xmin = 0.65
         p3_ymin = 0.60
         p3_xmax = 0.80
         p3_ymax = 0.82
-        dets.append(Detection(
-            label="cell phone",
-            confidence=0.792,
-            box=BoundingBox(
-                xmin=p3_xmin,
-                ymin=p3_ymin,
-                xmax=p3_xmax,
-                ymax=p3_ymax,
-                pixel_box=(int(p3_xmin * width), int(p3_ymin * height), int(p3_xmax * width), int(p3_ymax * height))
-            ),
-            class_id=67,
-            metadata={"source": "simulated_vision_engine"}
-        ))
+        dets.append(
+            Detection(
+                label="cell phone",
+                confidence=0.792,
+                box=BoundingBox(
+                    xmin=p3_xmin,
+                    ymin=p3_ymin,
+                    xmax=p3_xmax,
+                    ymax=p3_ymax,
+                    pixel_box=(
+                        int(p3_xmin * width),
+                        int(p3_ymin * height),
+                        int(p3_xmax * width),
+                        int(p3_ymax * height),
+                    ),
+                ),
+                class_id=67,
+                metadata={"source": "simulated_vision_engine"},
+            )
+        )
 
         return dets

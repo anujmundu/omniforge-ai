@@ -4,8 +4,8 @@ In-Memory & Persistent Vector Store Collection Manager for Enterprise RAG.
 
 from __future__ import annotations
 
-import time
 from typing import Any, Dict, List, Optional
+
 import numpy as np
 
 from nlp.embeddings import TransformerEmbeddingEngine
@@ -49,7 +49,7 @@ class InMemoryVectorStore(BaseVectorStore):
         # Append to collection
         self._collections[collection_name].extend(chunks)
         new_vecs = np.array([c.vector for c in chunks], dtype=np.float32)
-        
+
         if self._matrices[collection_name].shape[0] == 0:
             self._matrices[collection_name] = new_vecs
         else:
@@ -120,12 +120,14 @@ class InMemoryVectorStore(BaseVectorStore):
         collections_info = []
         for name, chunk_list in self._collections.items():
             doc_ids = len(set(c.doc_id for c in chunk_list))
-            collections_info.append({
-                "collection_name": name,
-                "total_chunks": len(chunk_list),
-                "unique_documents": doc_ids,
-                "vector_dimension": self.embedder.dimension,
-            })
+            collections_info.append(
+                {
+                    "collection_name": name,
+                    "total_chunks": len(chunk_list),
+                    "unique_documents": doc_ids,
+                    "vector_dimension": self.embedder.dimension,
+                }
+            )
         return collections_info
 
     def clear(self, collection_name: Optional[str] = None) -> None:

@@ -19,8 +19,6 @@ from rag.chunker import RecursiveSemanticChunker
 from rag.evaluator import RAGEvaluator
 from rag.parser import DocumentParser
 from rag.pipeline import EnterpriseRAGPipeline
-from rag.reranker import CrossEncoderReranker
-from rag.vector_store import InMemoryVectorStore
 
 console = Console()
 
@@ -55,14 +53,16 @@ Every synthesized statement includes verifiable citation indices pointing to sou
         table.add_row(c.chunk_id[:12], str(c.chunk_index), f"[{c.start_char}:{c.end_char}]", preview)
 
     console.print(table)
-    console.print(f"   [bold green][OK][/bold green] Parsed and split document into {len(chunks)} semantic chunks with 100% verified character alignment.")
+    console.print(
+        f"   [bold green][OK][/bold green] Parsed and split document into {len(chunks)} semantic chunks with 100% verified character alignment."
+    )
 
 
 def demo_dense_retrieval_and_reranking(pipeline: EnterpriseRAGPipeline):
     console.print("\n[bold cyan]2. Vector Search vs. Cross-Encoder Reranking Comparison...[/bold cyan]")
 
     query = "How does OmniForge handle multi-target tracking in Computer Vision?"
-    
+
     # 1. Initial Vector Search (Recall Stage)
     q_emb = pipeline.embedder.embed_text(query)
     vector_results = pipeline.vector_store.search("enterprise_kb", query_vector=q_emb.vector, top_k=4)
@@ -70,7 +70,7 @@ def demo_dense_retrieval_and_reranking(pipeline: EnterpriseRAGPipeline):
     # 2. Cross-Encoder Reranking (Precision Stage)
     reranked_results = pipeline.reranker.rerank(query=query, candidate_chunks=vector_results, top_k=3)
 
-    table = Table(title=f"Retrieval & Reranking Results for: \"{query}\"", header_style="bold blue")
+    table = Table(title=f'Retrieval & Reranking Results for: "{query}"', header_style="bold blue")
     table.add_column("Initial Rank", style="cyan", justify="center")
     table.add_column("Reranked Rank", style="yellow", justify="center")
     table.add_column("Document / Chunk Title", style="white")
@@ -101,8 +101,8 @@ def demo_grounded_qa_with_citations(pipeline: EnterpriseRAGPipeline):
     response = pipeline.query(query=query, collection_name="enterprise_kb", top_k=3, rerank=True)
     latency = (time.perf_counter() - start) * 1000.0
 
-    console.print(f"   [bold magenta]Query:[/bold magenta] \"{response.query}\"")
-    console.print(f"   [bold yellow]Synthesized Grounded Answer:[/bold yellow]\n   \"{response.answer}\"\n")
+    console.print(f'   [bold magenta]Query:[/bold magenta] "{response.query}"')
+    console.print(f'   [bold yellow]Synthesized Grounded Answer:[/bold yellow]\n   "{response.answer}"\n')
 
     cit_table = Table(title="Generated Verifiable Citations", header_style="bold green")
     cit_table.add_column("Citation ID", justify="center", style="cyan")
@@ -121,7 +121,9 @@ def demo_grounded_qa_with_citations(pipeline: EnterpriseRAGPipeline):
         )
 
     console.print(cit_table)
-    console.print(f"   [bold green][OK][/bold green] Grounded answer synthesized with {len(response.citations)} citations | Latency: [bold]{latency:.2f} ms[/bold]")
+    console.print(
+        f"   [bold green][OK][/bold green] Grounded answer synthesized with {len(response.citations)} citations | Latency: [bold]{latency:.2f} ms[/bold]"
+    )
     return response
 
 
@@ -152,7 +154,9 @@ def demo_rag_evaluation(evaluator: RAGEvaluator, rag_response):
         table.add_row(m, s, t, stat)
 
     console.print(table)
-    console.print("   [bold green][OK][/bold green] Automated evaluation completed. All enterprise quality gates passed.")
+    console.print(
+        "   [bold green][OK][/bold green] Automated evaluation completed. All enterprise quality gates passed."
+    )
 
 
 def main():
@@ -203,11 +207,24 @@ def main():
     summary_table.add_column("Evaluation Metric", style="magenta")
     summary_table.add_column("Latency / Throughput", justify="right", style="green")
 
-    summary_table.add_row("Document Parser & Chunker", "Recursive Markdown/JSON Splitting", "Character Span Preservation (100%)", "< 1 ms / doc")
-    summary_table.add_row("Vector Store Indexer", "Dense Cosine Similarity Matrix", "Top-K Nearest Neighbor Recall", "< 3 ms / search")
-    summary_table.add_row("Cross-Encoder Reranker", "Pairwise Query-Context Scoring", "Precision @ K Normalization", "< 4 ms / rerank")
-    summary_table.add_row("Grounded Generation", "Citation-Indexed Synthesis", "Faithfulness & Groundedness > 0.85", "< 8 ms total")
-    summary_table.add_row("Evaluation Framework", "Automated RAG Triad Scorer", "Harmonic Quality Score > 0.80", "< 1 ms / eval")
+    summary_table.add_row(
+        "Document Parser & Chunker",
+        "Recursive Markdown/JSON Splitting",
+        "Character Span Preservation (100%)",
+        "< 1 ms / doc",
+    )
+    summary_table.add_row(
+        "Vector Store Indexer", "Dense Cosine Similarity Matrix", "Top-K Nearest Neighbor Recall", "< 3 ms / search"
+    )
+    summary_table.add_row(
+        "Cross-Encoder Reranker", "Pairwise Query-Context Scoring", "Precision @ K Normalization", "< 4 ms / rerank"
+    )
+    summary_table.add_row(
+        "Grounded Generation", "Citation-Indexed Synthesis", "Faithfulness & Groundedness > 0.85", "< 8 ms total"
+    )
+    summary_table.add_row(
+        "Evaluation Framework", "Automated RAG Triad Scorer", "Harmonic Quality Score > 0.80", "< 1 ms / eval"
+    )
 
     console.print("\n", summary_table)
     console.print("\n[bold green][OK] Phase 5 (Enterprise RAG Engine) validated and fully operational.[/bold green]\n")

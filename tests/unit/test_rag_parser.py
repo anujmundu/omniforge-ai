@@ -3,6 +3,7 @@ Unit tests for RAG Document Parsers (Text, Markdown, JSON, HTML).
 """
 
 import pytest
+
 from rag.parser import DocumentParser
 
 

@@ -4,24 +4,24 @@ Base contracts and domain models for Computer Vision and Video Analytics.
 
 from __future__ import annotations
 
-import math
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
+
 from pydantic import BaseModel, Field
 
 
 class BoundingBox(BaseModel):
     """Normalized bounding box coordinates in [0.0, 1.0] space and pixel space."""
+
     # Normalized coordinates [0.0, 1.0]
     xmin: float = Field(..., ge=0.0, le=1.0, description="Normalized top-left X")
     ymin: float = Field(..., ge=0.0, le=1.0, description="Normalized top-left Y")
     xmax: float = Field(..., ge=0.0, le=1.0, description="Normalized bottom-right X")
     ymax: float = Field(..., ge=0.0, le=1.0, description="Normalized bottom-right Y")
-    
+
     # Absolute pixel dimensions (optional if image shape is known)
     pixel_box: Optional[Tuple[int, int, int, int]] = Field(
-        default=None,
-        description="Absolute pixel coordinates (x1, y1, x2, y2)"
+        default=None, description="Absolute pixel coordinates (x1, y1, x2, y2)"
     )
 
     @property
@@ -67,6 +67,7 @@ class BoundingBox(BaseModel):
 
 class Detection(BaseModel):
     """Single object detection instance."""
+
     label: str = Field(..., description="Class name / label")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Detection confidence score")
     box: BoundingBox = Field(..., description="Spatial bounding box")
@@ -76,6 +77,7 @@ class Detection(BaseModel):
 
 class DetectionResult(BaseModel):
     """Complete detection output for an image frame."""
+
     frame_index: int = Field(default=0, description="Frame index in stream/batch")
     timestamp_ms: Optional[float] = Field(default=None, description="Frame timestamp in milliseconds")
     image_width: int = Field(..., description="Image width in pixels")
@@ -91,24 +93,24 @@ class DetectionResult(BaseModel):
 
 class TrackedObject(BaseModel):
     """Object tracked across sequential video frames with persistent ID and history."""
+
     track_id: int = Field(..., description="Unique persistent tracking identifier")
     label: str = Field(..., description="Class label")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Current confidence score")
     current_box: BoundingBox = Field(..., description="Current frame bounding box")
     history_centers: List[Tuple[float, float]] = Field(
-        default_factory=list,
-        description="Historical centroid trajectory [(x, y), ...]"
+        default_factory=list, description="Historical centroid trajectory [(x, y), ...]"
     )
     age_frames: int = Field(default=1, description="Number of frames this object has been tracked")
     time_since_update: int = Field(default=0, description="Frames since object was last matched")
     velocity: Optional[Tuple[float, float]] = Field(
-        default=(0.0, 0.0),
-        description="Estimated velocity vector (dx/frame, dy/frame)"
+        default=(0.0, 0.0), description="Estimated velocity vector (dx/frame, dy/frame)"
     )
 
 
 class TrackingResult(BaseModel):
     """Multi-object tracking output for a video frame."""
+
     frame_index: int = Field(..., description="Video frame sequence index")
     timestamp_ms: Optional[float] = Field(default=None, description="Frame timestamp in milliseconds")
     active_tracks: List[TrackedObject] = Field(default_factory=list, description="Currently active tracked objects")
@@ -118,17 +120,18 @@ class TrackingResult(BaseModel):
 
 class OCRSpan(BaseModel):
     """Individual text snippet extracted via OCR with spatial localization."""
+
     text: str = Field(..., description="Extracted text string")
     confidence: float = Field(..., ge=0.0, le=1.0, description="OCR confidence score")
     box: BoundingBox = Field(..., description="Bounding box containing the text")
     polygon: Optional[List[Tuple[float, float]]] = Field(
-        default=None,
-        description="Detailed polygon coordinates [(x1, y1), (x2, y2), ...]"
+        default=None, description="Detailed polygon coordinates [(x1, y1), (x2, y2), ...]"
     )
 
 
 class OCRResult(BaseModel):
     """Complete OCR extraction output."""
+
     full_text: str = Field(..., description="Aggregated readable text extracted from document/scene")
     spans: List[OCRSpan] = Field(default_factory=list, description="List of localized text spans")
     image_width: int = Field(..., description="Source image width")
@@ -140,6 +143,7 @@ class OCRResult(BaseModel):
 # ==============================================================================
 # Abstract Engine Contracts
 # ==============================================================================
+
 
 class BaseDetector(ABC):
     """Abstract interface for object detection models."""

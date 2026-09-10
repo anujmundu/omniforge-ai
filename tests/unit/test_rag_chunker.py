@@ -2,7 +2,6 @@
 Unit tests for Recursive Semantic Chunking and Exact Span Alignment.
 """
 
-import pytest
 from rag.base import Document
 from rag.chunker import RecursiveSemanticChunker
 
@@ -24,7 +23,7 @@ def test_chunker_basic_splitting():
         assert chunk.title == doc.title
         assert chunk.chunk_index == idx
         # Verify exact substring match with character offsets
-        assert text[chunk.start_char:chunk.end_char] == chunk.text
+        assert text[chunk.start_char : chunk.end_char] == chunk.text
 
 
 def test_chunker_short_text():

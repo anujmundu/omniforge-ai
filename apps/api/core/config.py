@@ -1,6 +1,6 @@
-import os
 from functools import lru_cache
 from typing import List, Union
+
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -8,12 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     """Application configuration loaded from environment variables and .env file."""
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore",
-        case_sensitive=False
-    )
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore", case_sensitive=False)
 
     # Core Application
     ENVIRONMENT: str = Field(default="development", description="Current environment mode")
@@ -27,7 +22,7 @@ class Settings(BaseSettings):
     # Security & JWT
     SECRET_KEY: str = Field(
         default="omniforge-insecure-development-secret-key-change-in-production-32bytes",
-        description="JWT signature secret key"
+        description="JWT signature secret key",
     )
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
@@ -35,8 +30,7 @@ class Settings(BaseSettings):
 
     # Database
     DATABASE_URL: str = Field(
-        default="sqlite+aiosqlite:///./omniforge.db",
-        description="Async database connection string"
+        default="sqlite+aiosqlite:///./omniforge.db", description="Async database connection string"
     )
 
     # Redis & Storage

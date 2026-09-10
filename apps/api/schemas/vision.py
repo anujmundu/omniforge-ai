@@ -5,11 +5,13 @@ Pydantic schemas for Computer Vision and Video Analytics REST APIs.
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Tuple
+
 from pydantic import BaseModel, Field
 
 
 class BoundingBoxSchema(BaseModel):
     """Normalized spatial coordinates [0.0, 1.0]."""
+
     xmin: float = Field(..., ge=0.0, le=1.0)
     ymin: float = Field(..., ge=0.0, le=1.0)
     xmax: float = Field(..., ge=0.0, le=1.0)
@@ -27,6 +29,7 @@ class DetectionItemSchema(BaseModel):
 
 class DetectImageRequest(BaseModel):
     """Request payload for image object detection."""
+
     image_base64: Optional[str] = Field(default=None, description="Base64-encoded image string")
     image_url: Optional[str] = Field(default=None, description="Public image URL")
     confidence_threshold: float = Field(default=0.25, ge=0.0, le=1.0)
@@ -36,6 +39,7 @@ class DetectImageRequest(BaseModel):
 
 class DetectImageResponse(BaseModel):
     """Response payload for image object detection."""
+
     image_width: int
     image_height: int
     total_detections: int
@@ -53,6 +57,7 @@ class OCRSpanSchema(BaseModel):
 
 class OCRRequest(BaseModel):
     """Request payload for OCR extraction."""
+
     image_base64: Optional[str] = Field(default=None, description="Base64-encoded image string")
     min_confidence: float = Field(default=0.30, ge=0.0, le=1.0)
     language: str = Field(default="en")
@@ -60,6 +65,7 @@ class OCRRequest(BaseModel):
 
 class OCRResponse(BaseModel):
     """Response payload for OCR extraction."""
+
     full_text: str
     total_spans: int
     spans: List[OCRSpanSchema]
@@ -89,6 +95,7 @@ class TrackFrameResponse(BaseModel):
 
 class VideoTrackingRequest(BaseModel):
     """Request payload for multi-frame video tracking."""
+
     frames_base64: List[str] = Field(..., min_length=1, description="Ordered list of base64 video frames")
     fps: float = Field(default=30.0, ge=1.0)
     confidence_threshold: float = Field(default=0.25, ge=0.0, le=1.0)

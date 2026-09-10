@@ -4,9 +4,7 @@ Cross-Encoder Semantic Reranker for Second-Stage Precision Retrieval.
 
 from __future__ import annotations
 
-import time
 from typing import List
-import numpy as np
 
 from rag.base import BaseReranker, RetrievalResult
 

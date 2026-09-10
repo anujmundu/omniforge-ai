@@ -1,7 +1,9 @@
 import enum
-from typing import Any, Dict, Optional, TYPE_CHECKING
-from sqlalchemy import BigInteger, Enum, ForeignKey, JSON, String, Text
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
+from sqlalchemy import JSON, BigInteger, Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from apps.api.core.database import Base
 from apps.api.models.base import TimestampMixin, UUIDPrimaryKeyMixin
 
@@ -20,6 +22,7 @@ class DatasetFormat(str, enum.Enum):
 
 class Dataset(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     """Dataset registration and metadata tracking."""
+
     __tablename__ = "datasets"
 
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)

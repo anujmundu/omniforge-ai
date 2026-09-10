@@ -7,10 +7,9 @@ from __future__ import annotations
 import base64
 import time
 from typing import Any, List
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from apps.api.core.database import get_db_session
+from fastapi import APIRouter, Depends, HTTPException, status
+
 from apps.api.core.dependencies import get_current_user
 from apps.api.models.user import User
 from apps.api.schemas.vision import (
@@ -29,7 +28,6 @@ from apps.api.schemas.vision import (
 )
 from vision.detector import ObjectDetector
 from vision.ocr import SpatialOCREngine
-from vision.stream import VideoStreamProcessor
 from vision.tracker import MultiObjectTracker
 
 router = APIRouter(prefix="/vision", tags=["Computer Vision & Video Analytics"])
@@ -45,22 +43,21 @@ def _decode_base64_or_dummy(image_b64: str | None) -> bytes:
     if not image_b64:
         # 100x100 RGB dummy byte array encoded in PNG format
         import io
+
         from PIL import Image
+
         img = Image.new("RGB", (640, 480), color=(73, 109, 137))
         buf = io.BytesIO()
         img.save(buf, format="PNG")
         return buf.getvalue()
-    
+
     try:
         # Strip data URL prefix if present
         if "," in image_b64:
             image_b64 = image_b64.split(",", 1)[1]
         return base64.b64decode(image_b64)
     except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid base64 image data: {str(exc)}"
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid base64 image data: {str(exc)}")
 
 
 @router.get("/models", response_model=VisionModelInfoResponse)
@@ -91,7 +88,7 @@ async def get_vision_models(
                 "task": "optical_character_recognition",
                 "geometry": "4-point polygon + bounding box",
                 "supported_languages": ["en", "es", "fr", "de"],
-            }
+            },
         ],
         supported_classes=_detector.COCO_CLASSES,
     )
@@ -107,7 +104,7 @@ async def detect_objects(
     Returns normalized bounding boxes, confidence scores, and class labels.
     """
     image_bytes = _decode_base64_or_dummy(request.image_base64)
-    
+
     det_result = _detector.detect(
         image=image_bytes,
         confidence_threshold=request.confidence_threshold,

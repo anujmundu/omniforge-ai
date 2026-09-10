@@ -4,16 +4,19 @@ Base contracts and domain models for Enterprise Retrieval-Augmented Generation (
 
 from __future__ import annotations
 
+import uuid
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 
-import uuid
-
 class Document(BaseModel):
     """Raw or structured document representation before chunking."""
-    doc_id: str = Field(default_factory=lambda: f"doc_{uuid.uuid4().hex[:12]}", description="Unique document identifier")
+
+    doc_id: str = Field(
+        default_factory=lambda: f"doc_{uuid.uuid4().hex[:12]}", description="Unique document identifier"
+    )
     title: str = Field(..., description="Document title or filename")
     content: str = Field(..., description="Raw text content")
     source_type: str = Field(default="text", description="Document source format (text, markdown, json, pdf)")
@@ -22,6 +25,7 @@ class Document(BaseModel):
 
 class DocumentChunk(BaseModel):
     """Segmented semantic chunk of a parent document."""
+
     chunk_id: str = Field(..., description="Unique chunk ID (e.g. {doc_id}_{index})")
     doc_id: str = Field(..., description="Parent document identifier")
     title: str = Field(..., description="Parent document title")
@@ -35,6 +39,7 @@ class DocumentChunk(BaseModel):
 
 class RetrievalResult(BaseModel):
     """Retrieved document chunk with similarity / reranking scores."""
+
     chunk: DocumentChunk
     similarity_score: float = Field(..., description="Initial vector cosine similarity score")
     rerank_score: Optional[float] = Field(default=None, description="Second-stage cross-encoder score")
@@ -43,6 +48,7 @@ class RetrievalResult(BaseModel):
 
 class Citation(BaseModel):
     """Grounded source citation for generated answer."""
+
     citation_id: int = Field(..., description="Citation marker (e.g. [1], [2])")
     doc_id: str
     doc_title: str
@@ -54,6 +60,7 @@ class Citation(BaseModel):
 
 class RAGResponse(BaseModel):
     """Complete grounded answer synthesis output."""
+
     query: str
     answer: str = Field(..., description="Generated grounded response with citation markers")
     citations: List[Citation] = Field(default_factory=list, description="Verified source citations")
@@ -64,6 +71,7 @@ class RAGResponse(BaseModel):
 
 class RAGEvaluationResult(BaseModel):
     """Quantitative RAG evaluation metrics."""
+
     query: str
     generated_answer: str
     ground_truth_answer: Optional[str] = None
@@ -78,11 +86,14 @@ class RAGEvaluationResult(BaseModel):
 # Abstract Engine Interfaces
 # ==============================================================================
 
+
 class BaseDocumentParser(ABC):
     """Abstract interface for parsing heterogeneous document formats."""
 
     @abstractmethod
-    def parse(self, raw_content: str, title: str, source_type: str = "text", metadata: Optional[Dict[str, Any]] = None) -> Document:
+    def parse(
+        self, raw_content: str, title: str, source_type: str = "text", metadata: Optional[Dict[str, Any]] = None
+    ) -> Document:
         """Parse raw content into a standardized Document instance."""
         pass
 

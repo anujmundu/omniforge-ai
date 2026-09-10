@@ -4,8 +4,8 @@ Recursive Character and Semantic Chunker for Enterprise RAG.
 
 from __future__ import annotations
 
-import re
 from typing import List, Optional
+
 from rag.base import BaseChunker, Document, DocumentChunk
 
 

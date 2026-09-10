@@ -1,8 +1,10 @@
-from typing import Callable, List, Optional
+from typing import Callable, Optional
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from apps.api.core.config import get_settings
 from apps.api.core.database import get_db_session
 from apps.api.core.security import decode_token
@@ -47,6 +49,7 @@ async def get_current_user(
 
 def require_roles(*allowed_roles: UserRole) -> Callable:
     """Dependency factory enforcing RBAC role checks."""
+
     async def role_checker(current_user: User = Depends(get_current_user)) -> User:
         if current_user.role not in allowed_roles and current_user.role != UserRole.ADMIN:
             raise HTTPException(
@@ -54,4 +57,5 @@ def require_roles(*allowed_roles: UserRole) -> Callable:
                 detail=f"Operation not permitted for role '{current_user.role.value}'. Required: {[r.value for r in allowed_roles]}",
             )
         return current_user
+
     return role_checker

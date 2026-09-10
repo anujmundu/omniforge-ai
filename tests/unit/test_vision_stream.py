@@ -2,9 +2,9 @@
 Unit tests for VideoStreamProcessor.
 """
 
-import asyncio
 import numpy as np
 import pytest
+
 from vision.detector import ObjectDetector
 from vision.stream import VideoStreamProcessor
 from vision.tracker import MultiObjectTracker

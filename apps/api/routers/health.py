@@ -1,8 +1,10 @@
 import time
 from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, status
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from apps.api.core.config import get_settings
 from apps.api.core.database import get_db_session
 from apps.api.schemas.health import HealthResponse, ServiceHealth

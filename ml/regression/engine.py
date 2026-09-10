@@ -1,8 +1,8 @@
 import json
-import os
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional, Union
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -74,9 +74,7 @@ class RegressionEngine(BaseMLEstimator):
         self.feature_names = list(X.columns)
         self.target_name = target_name
 
-        X_train, X_val, y_train, y_val = train_test_split(
-            X, y, test_size=validation_split, random_state=42
-        )
+        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=validation_split, random_state=42)
 
         X_train_transformed = self.preprocessor.fit_transform(X_train)
         X_val_transformed = self.preprocessor.transform(X_val)
@@ -116,7 +114,7 @@ class RegressionEngine(BaseMLEstimator):
         mae = float(mean_absolute_error(y, y_pred))
         r2 = float(r2_score(y, y_pred))
         evs = float(explained_variance_score(y, y_pred))
-        
+
         try:
             mape = float(mean_absolute_percentage_error(y, y_pred))
         except Exception:
@@ -129,9 +127,7 @@ class RegressionEngine(BaseMLEstimator):
             names = self.preprocessor.transformed_feature_names
             if len(names) == len(importances):
                 sorted_idx = np.argsort(importances)[::-1][:15]
-                feature_importance = {
-                    names[i]: round(float(importances[i]), 4) for i in sorted_idx
-                }
+                feature_importance = {names[i]: round(float(importances[i]), 4) for i in sorted_idx}
 
         metrics = {
             "rmse": round(rmse, 4),

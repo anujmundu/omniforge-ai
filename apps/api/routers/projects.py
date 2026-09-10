@@ -1,8 +1,10 @@
 import re
 from typing import Any, List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from apps.api.core.database import get_db_session
 from apps.api.core.dependencies import get_current_user, require_roles
 from apps.api.models.project import Project
@@ -26,9 +28,7 @@ def generate_slug(name: str) -> str:
 )
 async def create_project(
     project_in: ProjectCreate,
-    current_user: User = Depends(
-        require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)
-    ),
+    current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)),
     db: AsyncSession = Depends(get_db_session),
 ) -> Any:
     base_slug = project_in.slug or generate_slug(project_in.name)

@@ -4,11 +4,9 @@ Executes live object detection, multi-object tracking, spatial OCR, and async vi
 """
 
 import asyncio
-import io
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List
 
 # Ensure project root is in sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -65,7 +63,9 @@ def demo_object_detection(detector: ObjectDetector):
         )
 
     console.print(table)
-    console.print(f"   [bold green][OK][/bold green] Detected {result.count} objects | Inference Latency: [bold]{latency:.2f} ms[/bold]")
+    console.print(
+        f"   [bold green][OK][/bold green] Detected {result.count} objects | Inference Latency: [bold]{latency:.2f} ms[/bold]"
+    )
 
 
 def demo_multi_object_tracking(detector: ObjectDetector, tracker: MultiObjectTracker):
@@ -87,10 +87,7 @@ def demo_multi_object_tracking(detector: ObjectDetector, tracker: MultiObjectTra
         det_res = detector.detect(frame, frame_index=idx, timestamp_ms=ts_ms)
         track_res = tracker.update(det_res.detections, frame_index=idx, timestamp_ms=ts_ms)
 
-        tracks_desc = ", ".join([
-            f"#{t.track_id} {t.label} ({t.confidence*100:.0f}%)"
-            for t in track_res.active_tracks
-        ])
+        tracks_desc = ", ".join([f"#{t.track_id} {t.label} ({t.confidence*100:.0f}%)" for t in track_res.active_tracks])
         total_history = sum(len(t.history_centers) for t in track_res.active_tracks)
 
         track_table.add_row(
@@ -101,7 +98,9 @@ def demo_multi_object_tracking(detector: ObjectDetector, tracker: MultiObjectTra
         )
 
     console.print(track_table)
-    console.print(f"   [bold green][OK][/bold green] Persistent IDs maintained across {len(frames)} frames | Cumulative Unique Tracks: [bold]{tracker._total_tracks_count}[/bold]")
+    console.print(
+        f"   [bold green][OK][/bold green] Persistent IDs maintained across {len(frames)} frames | Cumulative Unique Tracks: [bold]{tracker._total_tracks_count}[/bold]"
+    )
 
 
 def demo_spatial_ocr(ocr_engine: SpatialOCREngine):
@@ -121,12 +120,14 @@ def demo_spatial_ocr(ocr_engine: SpatialOCREngine):
         table.add_row(
             span.text,
             f"{span.confidence * 100:.1f}%",
-            f"[{span.box.xmin:.2f}, {span.box.ymin:.2f}, {span.box.xmax:.2f}, {span.box.ymax:.2f}]"
+            f"[{span.box.xmin:.2f}, {span.box.ymin:.2f}, {span.box.xmax:.2f}, {span.box.ymax:.2f}]",
         )
 
     console.print(table)
-    console.print(f"   [bold magenta]Reconstructed Document Text:[/bold magenta] \"{ocr_result.full_text}\"")
-    console.print(f"   [bold green][OK][/bold green] Extracted {len(ocr_result.spans)} spatial text blocks | Latency: [bold]{latency:.2f} ms[/bold]")
+    console.print(f'   [bold magenta]Reconstructed Document Text:[/bold magenta] "{ocr_result.full_text}"')
+    console.print(
+        f"   [bold green][OK][/bold green] Extracted {len(ocr_result.spans)} spatial text blocks | Latency: [bold]{latency:.2f} ms[/bold]"
+    )
 
 
 async def demo_async_video_stream(detector: ObjectDetector, tracker: MultiObjectTracker):
@@ -149,7 +150,9 @@ async def demo_async_video_stream(detector: ObjectDetector, tracker: MultiObject
     duration = time.perf_counter() - start_time
     fps = processed_count / max(duration, 0.001)
 
-    console.print(f"   [bold green][OK][/bold green] Processed {processed_count} frames asynchronously | Throughput: [bold]{fps:.1f} FPS[/bold]")
+    console.print(
+        f"   [bold green][OK][/bold green] Processed {processed_count} frames asynchronously | Throughput: [bold]{fps:.1f} FPS[/bold]"
+    )
 
 
 def main():
@@ -179,9 +182,15 @@ def main():
     summary_table.add_column("Serving Latency", justify="right", style="green")
 
     summary_table.add_row("Object Detection", "YOLOv8n / Normalized Bounding Boxes", "COCO 80 Classes / NMS", "< 15 ms")
-    summary_table.add_row("Multi-Object Tracking", "ByteTrack Centroid-IoU Association", "Persistent IDs & Trajectory", "< 5 ms / frame")
-    summary_table.add_row("Spatial OCR", "Hybrid Polygon & Text Reconstruction", "Word/Span Level Confidence", "< 10 ms")
-    summary_table.add_row("Video Stream Pipeline", "Async Ring Buffer & Frame Generator", "30+ FPS Real-Time Serving", "Sub-frame latency")
+    summary_table.add_row(
+        "Multi-Object Tracking", "ByteTrack Centroid-IoU Association", "Persistent IDs & Trajectory", "< 5 ms / frame"
+    )
+    summary_table.add_row(
+        "Spatial OCR", "Hybrid Polygon & Text Reconstruction", "Word/Span Level Confidence", "< 10 ms"
+    )
+    summary_table.add_row(
+        "Video Stream Pipeline", "Async Ring Buffer & Frame Generator", "30+ FPS Real-Time Serving", "Sub-frame latency"
+    )
 
     console.print("\n", summary_table)
     console.print("\n[bold green][OK] Phase 3 (Computer Vision Engine) validated and fully operational.[/bold green]\n")

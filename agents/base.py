@@ -8,7 +8,8 @@ import time
 import uuid
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -23,6 +24,7 @@ class AgentRole(str, Enum):
 
 class AgentMessage(BaseModel):
     """Conversational turn message."""
+
     role: str = Field(..., description="user | assistant | system | tool")
     content: str = Field(..., description="Message text content")
     name: Optional[str] = Field(default=None, description="Agent or tool name identifier")
@@ -31,6 +33,7 @@ class AgentMessage(BaseModel):
 
 class ToolParameter(BaseModel):
     """Specification of a single tool argument."""
+
     name: str
     type: str = Field(default="string", description="string | integer | number | boolean | object | array")
     description: str
@@ -40,6 +43,7 @@ class ToolParameter(BaseModel):
 
 class ToolDefinition(BaseModel):
     """Introspected metadata and JSON Schema definition of a registered tool."""
+
     name: str
     description: str
     parameters: List[ToolParameter] = Field(default_factory=list)
@@ -73,6 +77,7 @@ class ToolDefinition(BaseModel):
 
 class ToolExecutionResult(BaseModel):
     """Result of an executed tool invocation."""
+
     tool_name: str
     arguments: Dict[str, Any] = Field(default_factory=dict)
     output: Any = None
@@ -83,12 +88,14 @@ class ToolExecutionResult(BaseModel):
 
 class AgentAction(BaseModel):
     """Action selected by an agent in a ReAct loop."""
+
     tool_name: str
     arguments: Dict[str, Any] = Field(default_factory=dict)
 
 
 class AgentObservation(BaseModel):
     """Observation observed from tool or specialist execution."""
+
     output: Any = None
     error: Optional[str] = None
     success: bool = True
@@ -96,6 +103,7 @@ class AgentObservation(BaseModel):
 
 class AgentStep(BaseModel):
     """A single ReAct reasoning cycle step."""
+
     step_index: int = Field(..., ge=0)
     thought: str = Field(..., description="Agent internal chain-of-thought reasoning")
     action: Optional[AgentAction] = None
@@ -105,6 +113,7 @@ class AgentStep(BaseModel):
 
 class AgentPlanStep(BaseModel):
     """A decomposed sub-task in an overall multi-agent execution plan."""
+
     step_id: int
     description: str
     assigned_agent: str = Field(default="GENERAL")
@@ -115,6 +124,7 @@ class AgentPlanStep(BaseModel):
 
 class AgentPlan(BaseModel):
     """Structured DAG decomposition of a multi-modal user request."""
+
     plan_id: str = Field(default_factory=lambda: f"plan_{uuid.uuid4().hex[:10]}")
     user_intent: str
     steps: List[AgentPlanStep] = Field(default_factory=list)
@@ -123,6 +133,7 @@ class AgentPlan(BaseModel):
 
 class AgentResponse(BaseModel):
     """Complete multi-agent execution response."""
+
     query: str
     final_answer: str
     plan: Optional[AgentPlan] = None
@@ -135,6 +146,7 @@ class AgentResponse(BaseModel):
 # ==============================================================================
 # Abstract Agent & Tool Interfaces
 # ==============================================================================
+
 
 class BaseTool(ABC):
     """Abstract interface for executable tools."""

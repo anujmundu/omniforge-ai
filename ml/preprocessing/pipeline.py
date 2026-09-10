@@ -1,11 +1,12 @@
-from typing import Dict, List, Optional, Union
+from typing import List, Optional
+
 import numpy as np
 import pandas as pd
-from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, RobustScaler, StandardScaler
+
 from ml.base import BasePreprocessor
 
 
@@ -47,18 +48,22 @@ class AutoColumnTransformer(BasePreprocessor):
         # Numerical pipeline
         if self.numeric_features:
             scaler = RobustScaler() if self.scaler_type == "robust" else StandardScaler()
-            num_pipe = Pipeline([
-                ("imputer", SimpleImputer(strategy="median")),
-                ("scaler", scaler),
-            ])
+            num_pipe = Pipeline(
+                [
+                    ("imputer", SimpleImputer(strategy="median")),
+                    ("scaler", scaler),
+                ]
+            )
             transformers.append(("numeric", num_pipe, self.numeric_features))
 
         # Categorical pipeline
         if self.categorical_features:
-            cat_pipe = Pipeline([
-                ("imputer", SimpleImputer(strategy="constant", fill_value="missing")),
-                ("encoder", OneHotEncoder(handle_unknown=self.handle_unknown, sparse_output=False)),
-            ])
+            cat_pipe = Pipeline(
+                [
+                    ("imputer", SimpleImputer(strategy="constant", fill_value="missing")),
+                    ("encoder", OneHotEncoder(handle_unknown=self.handle_unknown, sparse_output=False)),
+                ]
+            )
             transformers.append(("categorical", cat_pipe, self.categorical_features))
 
         if not transformers:

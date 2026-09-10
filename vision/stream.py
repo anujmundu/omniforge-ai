@@ -5,10 +5,9 @@ High-throughput asynchronous video frame stream ingestion and processing pipelin
 from __future__ import annotations
 
 import asyncio
-import time
-from typing import AsyncGenerator, Callable, List, Optional, Tuple
+from typing import AsyncGenerator, List, Optional, Tuple
+
 import numpy as np
-from PIL import Image
 
 from vision.base import BaseDetector, BaseTracker, DetectionResult, TrackingResult
 

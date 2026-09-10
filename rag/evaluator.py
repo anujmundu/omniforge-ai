@@ -5,14 +5,45 @@ Quantitative RAG Evaluation Harness (Faithfulness, Answer Relevance, Context Pre
 from __future__ import annotations
 
 import re
-import time
 from typing import List, Optional
+
 from rag.base import RAGEvaluationResult, RetrievalResult
 
 STOP_WORDS = {
-    "a", "an", "the", "in", "on", "at", "for", "to", "of", "and", "or", "is", "are",
-    "was", "were", "what", "which", "who", "whom", "this", "that", "these", "those",
-    "how", "why", "when", "where", "with", "as", "by", "from", "it", "its", "their",
+    "a",
+    "an",
+    "the",
+    "in",
+    "on",
+    "at",
+    "for",
+    "to",
+    "of",
+    "and",
+    "or",
+    "is",
+    "are",
+    "was",
+    "were",
+    "what",
+    "which",
+    "who",
+    "whom",
+    "this",
+    "that",
+    "these",
+    "those",
+    "how",
+    "why",
+    "when",
+    "where",
+    "with",
+    "as",
+    "by",
+    "from",
+    "it",
+    "its",
+    "their",
 }
 
 
@@ -70,9 +101,7 @@ class RAGEvaluator:
 
         # Harmonic Mean Score
         denom = (
-            (1.0 / max(0.01, faithfulness))
-            + (1.0 / max(0.01, answer_relevance))
-            + (1.0 / max(0.01, context_precision))
+            (1.0 / max(0.01, faithfulness)) + (1.0 / max(0.01, answer_relevance)) + (1.0 / max(0.01, context_precision))
         )
         overall_score = min(1.0, max(0.0, 3.0 / denom))
 

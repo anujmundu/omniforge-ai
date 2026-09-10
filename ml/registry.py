@@ -2,11 +2,12 @@ import json
 import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Type, Union
+
+from ml.anomaly.engine import AnomalyEngine
 from ml.base import BaseMLEstimator, TaskType
 from ml.classification.engine import ClassificationEngine
-from ml.regression.engine import RegressionEngine
-from ml.anomaly.engine import AnomalyEngine
 from ml.forecasting.engine import ForecastingEngine
+from ml.regression.engine import RegressionEngine
 
 DEFAULT_REGISTRY_DIR = Path("./storage/models")
 
@@ -89,11 +90,13 @@ class ModelRegistry:
                             meta = json.load(f)
                     except Exception:
                         pass
-                models.append({
-                    "model_id": p.name,
-                    "artifact_path": str(p / "model.joblib"),
-                    "metadata": meta,
-                })
+                models.append(
+                    {
+                        "model_id": p.name,
+                        "artifact_path": str(p / "model.joblib"),
+                        "metadata": meta,
+                    }
+                )
         return models
 
     def clear_cache(self) -> None:

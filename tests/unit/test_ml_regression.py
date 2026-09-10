@@ -1,7 +1,9 @@
 import tempfile
+
 import numpy as np
 import pandas as pd
 import pytest
+
 from ml.base import TaskType
 from ml.regression.engine import RegressionEngine
 
@@ -10,11 +12,13 @@ from ml.regression.engine import RegressionEngine
 def synthetic_price_data():
     np.random.seed(42)
     n = 100
-    df = pd.DataFrame({
-        "sqft": np.random.uniform(500, 3500, size=n),
-        "bedrooms": np.random.randint(1, 6, size=n),
-        "neighborhood": np.random.choice(["Downtown", "Suburbs", "Rural"], size=n),
-    })
+    df = pd.DataFrame(
+        {
+            "sqft": np.random.uniform(500, 3500, size=n),
+            "bedrooms": np.random.randint(1, 6, size=n),
+            "neighborhood": np.random.choice(["Downtown", "Suburbs", "Rural"], size=n),
+        }
+    )
     # Target price
     price = df["sqft"] * 150 + df["bedrooms"] * 10000 + np.random.normal(0, 5000, size=n)
     return df, price

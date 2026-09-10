@@ -1,8 +1,10 @@
 from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from apps.api.core.config import get_settings
 from apps.api.core.database import get_db_session
 from apps.api.core.dependencies import get_current_user

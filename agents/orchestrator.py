@@ -92,7 +92,10 @@ class SupervisorAgent(BaseAgent):
             step_id += 1
 
         # 3. Enterprise Knowledge Base RAG
-        if any(w in q_lower for w in ["knowledge", "doc", "rag", "policy", "search", "retrieve", "guide", "manual", "explain"]):
+        if any(
+            w in q_lower
+            for w in ["knowledge", "doc", "rag", "policy", "search", "retrieve", "guide", "manual", "explain"]
+        ):
             desc = "Search enterprise knowledge base for verified documentation and citations"
             steps.append(
                 AgentPlanStep(
@@ -105,7 +108,9 @@ class SupervisorAgent(BaseAgent):
             step_id += 1
 
         # 4. Classical ML Predictive Analytics
-        if any(w in q_lower for w in ["predict", "churn", "price", "forecast", "anomaly", "fraud", "estimate", "trend"]):
+        if any(
+            w in q_lower for w in ["predict", "churn", "price", "forecast", "anomaly", "fraud", "estimate", "trend"]
+        ):
             deps = [s.step_id for s in steps]
             desc = "Execute Classical ML inference model (classification / regression / anomaly / forecast)"
             steps.append(

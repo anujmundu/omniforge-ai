@@ -2,7 +2,6 @@
 Unit tests for Cross-Encoder Reranking and Semantic Relevance Scoring.
 """
 
-import pytest
 from rag.base import DocumentChunk, RetrievalResult
 from rag.reranker import CrossEncoderReranker
 

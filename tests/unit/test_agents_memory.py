@@ -2,7 +2,6 @@
 Unit tests for AgentMemory (Short-term buffer, Scratchpad, Truncation).
 """
 
-import pytest
 from agents.base import AgentAction, AgentObservation, AgentStep
 from agents.memory import AgentMemory
 

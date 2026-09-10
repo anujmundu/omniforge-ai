@@ -1,8 +1,8 @@
 import json
-import os
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Union
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -143,6 +143,7 @@ class AnomalyEngine(BaseMLEstimator):
             # Map sklearn (-1 anomaly, 1 normal) to (1 anomaly, 0 normal)
             y_binary_pred = np.where(preds == -1, 1, 0)
             from sklearn.metrics import f1_score, precision_score, recall_score
+
             metrics["ground_truth_f1"] = round(float(f1_score(y, y_binary_pred, zero_division=0)), 4)
             metrics["ground_truth_precision"] = round(float(precision_score(y, y_binary_pred, zero_division=0)), 4)
             metrics["ground_truth_recall"] = round(float(recall_score(y, y_binary_pred, zero_division=0)), 4)

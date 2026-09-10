@@ -7,7 +7,8 @@ from __future__ import annotations
 
 import io
 import time
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Tuple
+
 import numpy as np
 from PIL import Image
 
@@ -79,53 +80,68 @@ class SpatialOCREngine(BaseOCR):
 
         # Span 1: Header / Document Title
         b1_xmin, b1_ymin, b1_xmax, b1_ymax = 0.08, 0.05, 0.65, 0.12
-        spans.append(OCRSpan(
-            text="OMNIFORGE ENTERPRISE INTELLIGENCE REPORT",
-            confidence=0.978,
-            box=BoundingBox(
-                xmin=b1_xmin, ymin=b1_ymin, xmax=b1_xmax, ymax=b1_ymax,
-                pixel_box=(int(b1_xmin * width), int(b1_ymin * height), int(b1_xmax * width), int(b1_ymax * height))
-            ),
-            polygon=[
-                (b1_xmin, b1_ymin),
-                (b1_xmax, b1_ymin),
-                (b1_xmax, b1_ymax),
-                (b1_xmin, b1_ymax)
-            ]
-        ))
+        spans.append(
+            OCRSpan(
+                text="OMNIFORGE ENTERPRISE INTELLIGENCE REPORT",
+                confidence=0.978,
+                box=BoundingBox(
+                    xmin=b1_xmin,
+                    ymin=b1_ymin,
+                    xmax=b1_xmax,
+                    ymax=b1_ymax,
+                    pixel_box=(
+                        int(b1_xmin * width),
+                        int(b1_ymin * height),
+                        int(b1_xmax * width),
+                        int(b1_ymax * height),
+                    ),
+                ),
+                polygon=[(b1_xmin, b1_ymin), (b1_xmax, b1_ymin), (b1_xmax, b1_ymax), (b1_xmin, b1_ymax)],
+            )
+        )
 
         # Span 2: Invoice / Reference ID
         b2_xmin, b2_ymin, b2_xmax, b2_ymax = 0.08, 0.18, 0.42, 0.24
-        spans.append(OCRSpan(
-            text="Document ID: INV-2026-9841",
-            confidence=0.962,
-            box=BoundingBox(
-                xmin=b2_xmin, ymin=b2_ymin, xmax=b2_xmax, ymax=b2_ymax,
-                pixel_box=(int(b2_xmin * width), int(b2_ymin * height), int(b2_xmax * width), int(b2_ymax * height))
-            ),
-            polygon=[
-                (b2_xmin, b2_ymin),
-                (b2_xmax, b2_ymin),
-                (b2_xmax, b2_ymax),
-                (b2_xmin, b2_ymax)
-            ]
-        ))
+        spans.append(
+            OCRSpan(
+                text="Document ID: INV-2026-9841",
+                confidence=0.962,
+                box=BoundingBox(
+                    xmin=b2_xmin,
+                    ymin=b2_ymin,
+                    xmax=b2_xmax,
+                    ymax=b2_ymax,
+                    pixel_box=(
+                        int(b2_xmin * width),
+                        int(b2_ymin * height),
+                        int(b2_xmax * width),
+                        int(b2_ymax * height),
+                    ),
+                ),
+                polygon=[(b2_xmin, b2_ymin), (b2_xmax, b2_ymin), (b2_xmax, b2_ymax), (b2_xmin, b2_ymax)],
+            )
+        )
 
         # Span 3: Financial Total
         b3_xmin, b3_ymin, b3_xmax, b3_ymax = 0.55, 0.18, 0.88, 0.24
-        spans.append(OCRSpan(
-            text="Total Amount: $42,500.00 USD",
-            confidence=0.985,
-            box=BoundingBox(
-                xmin=b3_xmin, ymin=b3_ymin, xmax=b3_xmax, ymax=b3_ymax,
-                pixel_box=(int(b3_xmin * width), int(b3_ymin * height), int(b3_xmax * width), int(b3_ymax * height))
-            ),
-            polygon=[
-                (b3_xmin, b3_ymin),
-                (b3_xmax, b3_ymin),
-                (b3_xmax, b3_ymax),
-                (b3_xmin, b3_ymax)
-            ]
-        ))
+        spans.append(
+            OCRSpan(
+                text="Total Amount: $42,500.00 USD",
+                confidence=0.985,
+                box=BoundingBox(
+                    xmin=b3_xmin,
+                    ymin=b3_ymin,
+                    xmax=b3_xmax,
+                    ymax=b3_ymax,
+                    pixel_box=(
+                        int(b3_xmin * width),
+                        int(b3_ymin * height),
+                        int(b3_xmax * width),
+                        int(b3_ymax * height),
+                    ),
+                ),
+                polygon=[(b3_xmin, b3_ymin), (b3_xmax, b3_ymin), (b3_xmax, b3_ymax), (b3_xmin, b3_ymax)],
+            )
+        )
 
         return spans

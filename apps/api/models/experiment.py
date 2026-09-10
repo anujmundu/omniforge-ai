@@ -1,13 +1,15 @@
 import enum
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
-from sqlalchemy import Enum, Float, ForeignKey, JSON, String, Text
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
+
+from sqlalchemy import JSON, Enum, Float, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from apps.api.core.database import Base
 from apps.api.models.base import TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
-    from apps.api.models.project import Project
     from apps.api.models.artifact import Artifact
+    from apps.api.models.project import Project
 
 
 class ExperimentDomain(str, enum.Enum):
@@ -28,6 +30,7 @@ class ExperimentStatus(str, enum.Enum):
 
 class Experiment(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     """Experiment and model training run tracking entity."""
+
     __tablename__ = "experiments"
 
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
@@ -50,4 +53,6 @@ class Experiment(Base, UUIDPrimaryKeyMixin, TimestampMixin):
 
     # Relationships
     project: Mapped["Project"] = relationship("Project", back_populates="experiments")
-    artifacts: Mapped[List["Artifact"]] = relationship("Artifact", back_populates="experiment", cascade="all, delete-orphan")
+    artifacts: Mapped[List["Artifact"]] = relationship(
+        "Artifact", back_populates="experiment", cascade="all, delete-orphan"
+    )

@@ -4,6 +4,7 @@ Unit tests for Transformer text embeddings.
 
 import numpy as np
 import pytest
+
 from nlp.embeddings import TransformerEmbeddingEngine
 
 
@@ -23,11 +24,7 @@ def test_embedding_dimensionality_and_l2_norm():
 
 def test_batch_embedding_generation():
     engine = TransformerEmbeddingEngine(dimension=128)
-    texts = [
-        "Python FastAPI backend",
-        "Deep neural networks and PyTorch",
-        "Quarterly fiscal financial earnings report"
-    ]
+    texts = ["Python FastAPI backend", "Deep neural networks and PyTorch", "Quarterly fiscal financial earnings report"]
 
     batch = engine.embed_batch(texts)
     assert len(batch.embeddings) == 3

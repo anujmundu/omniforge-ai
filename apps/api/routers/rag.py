@@ -7,7 +7,8 @@ from __future__ import annotations
 
 import time
 from typing import Any, List
-from fastapi import APIRouter, Depends, status
+
+from fastapi import APIRouter, Depends
 
 from apps.api.core.dependencies import get_current_user
 from apps.api.models.user import User
@@ -27,12 +28,9 @@ from apps.api.schemas.rag import (
     RetrieveResponse,
 )
 from rag.base import Document, DocumentChunk, RetrievalResult
-from rag.chunker import RecursiveSemanticChunker
 from rag.evaluator import RAGEvaluator
 from rag.parser import DocumentParser
 from rag.pipeline import EnterpriseRAGPipeline
-from rag.reranker import CrossEncoderReranker
-from rag.vector_store import InMemoryVectorStore
 
 router = APIRouter(prefix="/rag", tags=["Enterprise Retrieval-Augmented Generation (RAG)"])
 
@@ -83,7 +81,7 @@ async def index_documents(
             doc = _doc_parser.parse_json(doc_in.content, title=doc_in.title, metadata=doc_in.metadata)
         else:
             doc = _doc_parser.parse_text(doc_in.content, title=doc_in.title, metadata=doc_in.metadata)
-        
+
         if doc_in.doc_id:
             doc.doc_id = doc_in.doc_id
         parsed_docs.append(doc)

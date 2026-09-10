@@ -7,9 +7,10 @@ from __future__ import annotations
 
 import time
 from typing import Dict, List, Optional, Tuple
+
 import numpy as np
 
-from vision.base import BaseTracker, BoundingBox, Detection, TrackedObject, TrackingResult
+from vision.base import BaseTracker, Detection, TrackedObject, TrackingResult
 
 
 class MultiObjectTracker(BaseTracker):
@@ -77,13 +78,13 @@ class MultiObjectTracker(BaseTracker):
 
                 for det_idx in unmatched_dets:
                     det = detections[det_idx]
-                    
+
                     # Must share the same class label
                     if det.label != track.label:
                         continue
 
                     iou = track.current_box.iou(det.box)
-                    
+
                     # Centroid distance
                     tc_x, tc_y = track.current_box.center
                     dc_x, dc_y = det.box.center
@@ -104,7 +105,7 @@ class MultiObjectTracker(BaseTracker):
         for track_id, det_idx in matched_pairs:
             det = detections[det_idx]
             track = self._tracks[track_id]
-            
+
             old_center = track.current_box.center
             new_center = det.box.center
             vx = new_center[0] - old_center[0]
@@ -140,16 +141,14 @@ class MultiObjectTracker(BaseTracker):
             self._tracks[tid] = new_track
 
         # Step 5: Remove expired tracks
-        dead_tracks = [
-            tid for tid, track in self._tracks.items()
-            if track.time_since_update > self.max_age
-        ]
+        dead_tracks = [tid for tid, track in self._tracks.items() if track.time_since_update > self.max_age]
         for tid in dead_tracks:
             del self._tracks[tid]
 
         # Active confirmed tracks
         active = [
-            track for track in self._tracks.values()
+            track
+            for track in self._tracks.values()
             if track.time_since_update == 0 and track.age_frames >= self.min_hits
         ]
 

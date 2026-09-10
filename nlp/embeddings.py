@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import time
 from typing import List, Union
+
 import numpy as np
 
 from nlp.base import BaseEmbeddingModel, BatchEmbeddingResult, TextEmbedding
@@ -43,7 +44,18 @@ class TransformerEmbeddingEngine(BaseEmbeddingModel):
 
         # Semantic keywords mapping for topic clustering
         clusters = {
-            "technology": ["python", "api", "software", "code", "ai", "machine", "learning", "model", "fastapi", "docker"],
+            "technology": [
+                "python",
+                "api",
+                "software",
+                "code",
+                "ai",
+                "machine",
+                "learning",
+                "model",
+                "fastapi",
+                "docker",
+            ],
             "finance": ["revenue", "profit", "quarter", "fiscal", "money", "dollar", "growth", "margin", "cost"],
             "science": ["physics", "biology", "quantum", "chemistry", "experiment", "molecule", "protein", "dna"],
             "customer": ["service", "support", "ticket", "issue", "churn", "user", "client", "satisfaction"],
@@ -54,11 +66,11 @@ class TransformerEmbeddingEngine(BaseEmbeddingModel):
             word_hash = int(hashlib.md5(word.encode("utf-8")).hexdigest(), 16)
             rng = np.random.RandomState(word_hash % (2**31 - 1))
             word_vec = rng.randn(self.dimension).astype(np.float32)
-            
+
             # Boost specific dimensions if matching topic cluster
             for cluster_idx, (topic, keywords) in enumerate(clusters.items()):
                 if any(kw in word for kw in keywords):
-                    start_dim = (cluster_idx * (self.dimension // len(clusters)))
+                    start_dim = cluster_idx * (self.dimension // len(clusters))
                     end_dim = start_dim + (self.dimension // len(clusters))
                     word_vec[start_dim:end_dim] += 2.5
 

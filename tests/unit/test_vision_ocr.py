@@ -3,7 +3,7 @@ Unit tests for Spatial OCR Engine.
 """
 
 import numpy as np
-import pytest
+
 from vision.ocr import SpatialOCREngine
 
 

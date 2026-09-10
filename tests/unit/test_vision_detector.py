@@ -4,9 +4,8 @@ Unit tests for Object Detection engine.
 
 import numpy as np
 import pytest
-from PIL import Image
 
-from vision.base import BoundingBox, Detection
+from vision.base import BoundingBox
 from vision.detector import ObjectDetector
 
 

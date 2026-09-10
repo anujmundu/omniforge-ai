@@ -86,7 +86,7 @@ async def test_experiment_tracking_and_artifacts_lifecycle(client: AsyncClient, 
 
     # 6. Query experiments by domain and status
     filter_res = await client.get(
-        f"/api/v1/experiments?domain=CLASSICAL_ML&status=COMPLETED",
+        "/api/v1/experiments?domain=CLASSICAL_ML&status=COMPLETED",
         headers=engineer_headers,
     )
     assert filter_res.status_code == 200

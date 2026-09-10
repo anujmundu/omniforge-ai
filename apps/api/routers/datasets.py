@@ -1,7 +1,9 @@
 from typing import Any, List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from apps.api.core.database import get_db_session
 from apps.api.core.dependencies import get_current_user, require_roles
 from apps.api.models.dataset import Dataset
@@ -20,9 +22,7 @@ router = APIRouter(prefix="/datasets", tags=["Dataset Management"])
 )
 async def register_dataset(
     dataset_in: DatasetCreate,
-    current_user: User = Depends(
-        require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)
-    ),
+    current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.ML_ENGINEER, UserRole.DATA_SCIENTIST)),
     db: AsyncSession = Depends(get_db_session),
 ) -> Any:
     # Verify project exists and user has access

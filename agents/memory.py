@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import time
 from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 from agents.base import AgentMessage, AgentStep
@@ -17,6 +18,7 @@ class AgentMemory(BaseModel):
     1. Short-term conversational message history (FIFO buffer).
     2. Dynamic execution scratchpad (stores intermediate steps and facts).
     """
+
     max_history: int = Field(default=20, ge=1)
     messages: List[AgentMessage] = Field(default_factory=list)
     scratchpad: Dict[str, Any] = Field(default_factory=dict)
@@ -28,7 +30,7 @@ class AgentMemory(BaseModel):
         self.messages.append(msg)
         # Truncate if exceeds max history
         if len(self.messages) > self.max_history:
-            self.messages = self.messages[-self.max_history:]
+            self.messages = self.messages[-self.max_history :]
 
     def add_step(self, step: AgentStep) -> None:
         """Record an executed ReAct reasoning step."""

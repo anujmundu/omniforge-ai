@@ -18,10 +18,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 os.chdir(PROJECT_ROOT)
 
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
 from httpx import ASGITransport, AsyncClient
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
 
 from apps.api.core.database import init_db
 from apps.api.main import app
@@ -30,7 +30,11 @@ console = Console()
 
 
 async def run_demo():
-    console.print(Panel.fit("[bold cyan]AIForge Multimodal Platform — End-to-End Foundation Demo[/bold cyan]", border_style="cyan"))
+    console.print(
+        Panel.fit(
+            "[bold cyan]AIForge Multimodal Platform — End-to-End Foundation Demo[/bold cyan]", border_style="cyan"
+        )
+    )
 
     # Ensure DB tables are initialized
     await init_db()
@@ -43,7 +47,9 @@ async def run_demo():
         health_data = health_res.json()
         req_id = health_res.headers.get("X-Request-ID")
         duration = health_res.headers.get("X-Process-Time-Ms")
-        console.print(f"Status Code: [green]{health_res.status_code}[/green] | Platform Status: [bold green]{health_data['status'].upper()}[/bold green]")
+        console.print(
+            f"Status Code: [green]{health_res.status_code}[/green] | Platform Status: [bold green]{health_data['status'].upper()}[/bold green]"
+        )
         console.print(f"Request-ID: [cyan]{req_id}[/cyan] | Processing Time: [cyan]{duration} ms[/cyan]")
 
         # 2. User Registration & Auth
@@ -56,14 +62,18 @@ async def run_demo():
         reg_res = await client.post("/api/v1/auth/register", json=user_payload)
         if reg_res.status_code == 201:
             auth_data = reg_res.json()
-            console.print(f"Registered User: [green]{auth_data['user']['email']}[/green] | Role: [bold magenta]{auth_data['user']['role']}[/bold magenta]")
+            console.print(
+                f"Registered User: [green]{auth_data['user']['email']}[/green] | Role: [bold magenta]{auth_data['user']['role']}[/bold magenta]"
+            )
         else:
             login_res = await client.post(
                 "/api/v1/auth/login",
                 json={"email": user_payload["email"], "password": user_payload["password"]},
             )
             auth_data = login_res.json()
-            console.print(f"Logged in Existing User: [green]{auth_data['user']['email']}[/green] | Role: [bold magenta]{auth_data['user']['role']}[/bold magenta]")
+            console.print(
+                f"Logged in Existing User: [green]{auth_data['user']['email']}[/green] | Role: [bold magenta]{auth_data['user']['role']}[/bold magenta]"
+            )
 
         token = auth_data["tokens"]["access_token"]
         headers = {"Authorization": f"Bearer {token}"}
@@ -100,7 +110,9 @@ async def run_demo():
         }
         ds_res = await client.post("/api/v1/datasets", json=dataset_payload, headers=headers)
         ds_data = ds_res.json()
-        console.print(f"Dataset Registered: [green]{ds_data['name']}[/green] (v{ds_data['version']}) | Rows: [cyan]{ds_data['row_count']:,}[/cyan]")
+        console.print(
+            f"Dataset Registered: [green]{ds_data['name']}[/green] (v{ds_data['version']}) | Rows: [cyan]{ds_data['row_count']:,}[/cyan]"
+        )
 
         # 5. Launch Experiment Run
         console.print("\n[bold yellow]Step 5: Launching Model Training Experiment...[/bold yellow]")
@@ -120,7 +132,9 @@ async def run_demo():
         exp_res = await client.post("/api/v1/experiments", json=exp_payload, headers=headers)
         exp_data = exp_res.json()
         experiment_id = exp_data["id"]
-        console.print(f"Experiment Run Started: [green]{exp_data['name']}[/green] | Status: [yellow]{exp_data['status']}[/yellow]")
+        console.print(
+            f"Experiment Run Started: [green]{exp_data['name']}[/green] | Status: [yellow]{exp_data['status']}[/yellow]"
+        )
 
         # 6. Complete Experiment with Metrics
         console.print("\n[bold yellow]Step 6: Recording Evaluation Metrics & Finalizing Run...[/bold yellow]")
@@ -148,9 +162,13 @@ async def run_demo():
             "size_bytes": 1845200,
             "checksum": "c5d88d3f1122a0e4a77e8a937a892bbf1845200c5d88d3f1122a0e4a77e8a93",
         }
-        art_res = await client.post(f"/api/v1/experiments/{experiment_id}/artifacts", json=artifact_payload, headers=headers)
+        art_res = await client.post(
+            f"/api/v1/experiments/{experiment_id}/artifacts", json=artifact_payload, headers=headers
+        )
         art_data = art_res.json()
-        console.print(f"Artifact Attached: [green]{art_data['name']}[/green] | Type: [magenta]{art_data['artifact_type']}[/magenta] | URI: [cyan]{art_data['uri']}[/cyan]")
+        console.print(
+            f"Artifact Attached: [green]{art_data['name']}[/green] | Type: [magenta]{art_data['artifact_type']}[/magenta] | URI: [cyan]{art_data['uri']}[/cyan]"
+        )
 
         # 8. Summary Table
         table = Table(title="AIForge Platform Foundation — Experiment Summary", header_style="bold blue")
@@ -170,7 +188,9 @@ async def run_demo():
 
         console.print("\n")
         console.print(table)
-        console.print("\n[bold green][OK] Phase 1 (Foundation) executed cleanly with all 12 quality gates validated.[/bold green]\n")
+        console.print(
+            "\n[bold green][OK] Phase 1 (Foundation) executed cleanly with all 12 quality gates validated.[/bold green]\n"
+        )
 
 
 if __name__ == "__main__":

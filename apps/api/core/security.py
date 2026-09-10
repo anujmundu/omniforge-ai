@@ -1,8 +1,9 @@
-import hashlib
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional, Union
+
 import bcrypt
 from jose import JWTError, jwt
+
 from apps.api.core.config import get_settings
 
 settings = get_settings()

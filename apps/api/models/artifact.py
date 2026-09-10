@@ -1,7 +1,9 @@
 import enum
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
 from sqlalchemy import BigInteger, Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from apps.api.core.database import Base
 from apps.api.models.base import TimestampMixin, UUIDPrimaryKeyMixin
 
@@ -20,9 +22,12 @@ class ArtifactType(str, enum.Enum):
 
 class Artifact(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     """Artifact produced by an experiment or pipeline run."""
+
     __tablename__ = "artifacts"
 
-    experiment_id: Mapped[str] = mapped_column(ForeignKey("experiments.id", ondelete="CASCADE"), nullable=False, index=True)
+    experiment_id: Mapped[str] = mapped_column(
+        ForeignKey("experiments.id", ondelete="CASCADE"), nullable=False, index=True
+    )
     name: Mapped[str] = mapped_column(String(150), nullable=False)
     artifact_type: Mapped[ArtifactType] = mapped_column(
         Enum(ArtifactType, name="artifact_type_enum", native_enum=False),

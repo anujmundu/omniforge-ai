@@ -2,7 +2,6 @@
 Unit tests for Domain Specialist Agents (ML, Vision, NLP, RAG).
 """
 
-import pytest
 from agents.specialists import (
     EnterpriseRAGAgent,
     MLAnalyticsAgent,

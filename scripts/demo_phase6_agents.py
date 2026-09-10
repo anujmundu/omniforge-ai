@@ -36,7 +36,9 @@ def demo_tool_registry_introspection(registry: ToolRegistry):
         table.add_row(t.name, t.category.upper(), params_str, t.description)
 
     console.print(table)
-    console.print(f"   [bold green][OK][/bold green] {len(tools)} declarative tools introspected with verified JSON schema definitions.")
+    console.print(
+        f"   [bold green][OK][/bold green] {len(tools)} declarative tools introspected with verified JSON schema definitions."
+    )
 
 
 def demo_plan_decomposition(supervisor: SupervisorAgent):
@@ -49,7 +51,7 @@ def demo_plan_decomposition(supervisor: SupervisorAgent):
         "and predict expenditure anomalies with ML."
     )
 
-    console.print(f"   [bold magenta]User Prompt:[/bold magenta] \"{complex_prompt}\"\n")
+    console.print(f'   [bold magenta]User Prompt:[/bold magenta] "{complex_prompt}"\n')
 
     plan = supervisor.decompose_plan(complex_prompt)
 
@@ -64,7 +66,9 @@ def demo_plan_decomposition(supervisor: SupervisorAgent):
         table.add_row(f"#{s.step_id}", s.assigned_agent, s.description, deps)
 
     console.print(table)
-    console.print(f"   [bold green][OK][/bold green] Generated {len(plan.steps)}-step execution DAG with dependency resolution.")
+    console.print(
+        f"   [bold green][OK][/bold green] Generated {len(plan.steps)}-step execution DAG with dependency resolution."
+    )
 
 
 def demo_multi_agent_react_execution(supervisor: SupervisorAgent):
@@ -94,7 +98,9 @@ def demo_multi_agent_react_execution(supervisor: SupervisorAgent):
 
     console.print(table)
     console.print(f"\n[bold yellow]Synthesized Final Response:[/bold yellow]\n{response.final_answer}\n")
-    console.print(f"   [bold green][OK][/bold green] Autonomous multi-agent coordination completed in {len(response.steps)} steps | Latency: [bold]{latency:.2f} ms[/bold]")
+    console.print(
+        f"   [bold green][OK][/bold green] Autonomous multi-agent coordination completed in {len(response.steps)} steps | Latency: [bold]{latency:.2f} ms[/bold]"
+    )
 
 
 def main():
@@ -121,15 +127,25 @@ def main():
     summary_table.add_column("Evaluation Metric", style="magenta")
     summary_table.add_column("Execution Latency", justify="right", style="green")
 
-    summary_table.add_row("Supervisor Agent", "DAG Intent Decomposition", "Plan Validity & Dependency Ordering", "< 2 ms")
+    summary_table.add_row(
+        "Supervisor Agent", "DAG Intent Decomposition", "Plan Validity & Dependency Ordering", "< 2 ms"
+    )
     summary_table.add_row("ML Analytics Agent", "Tabular Model Specialist", "Inference & Feature Validation", "< 5 ms")
-    summary_table.add_row("Vision Analytics Agent", "Spatial Perception Specialist", "Detection, OCR & Tracking Dispatch", "< 3 ms")
+    summary_table.add_row(
+        "Vision Analytics Agent", "Spatial Perception Specialist", "Detection, OCR & Tracking Dispatch", "< 3 ms"
+    )
     summary_table.add_row("NLP Processing Agent", "Language & NER Specialist", "Exact Span Entity Extraction", "< 2 ms")
-    summary_table.add_row("Enterprise RAG Agent", "Knowledge Base Specialist", "Hybrid Retrieval & Citation Linking", "< 4 ms")
-    summary_table.add_row("Tool Calling Mesh", "@tool Decorator & Registry", "Strict JSON Schema Validation", "< 0.5 ms / call")
+    summary_table.add_row(
+        "Enterprise RAG Agent", "Knowledge Base Specialist", "Hybrid Retrieval & Citation Linking", "< 4 ms"
+    )
+    summary_table.add_row(
+        "Tool Calling Mesh", "@tool Decorator & Registry", "Strict JSON Schema Validation", "< 0.5 ms / call"
+    )
 
     console.print("\n", summary_table)
-    console.print("\n[bold green][OK] Phase 6 (Multi-Agent Orchestrator) validated and fully operational.[/bold green]\n")
+    console.print(
+        "\n[bold green][OK] Phase 6 (Multi-Agent Orchestrator) validated and fully operational.[/bold green]\n"
+    )
 
 
 if __name__ == "__main__":

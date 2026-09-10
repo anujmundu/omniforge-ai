@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 from httpx import AsyncClient
 
@@ -19,12 +18,14 @@ async def test_ml_train_classification_and_predict(client: AsyncClient, engineer
     # 1. Train classification
     records = []
     for i in range(50):
-        records.append({
-            "tenure": i + 1,
-            "monthly_charges": 30.0 + i * 1.5,
-            "contract": "Month-to-month" if i % 2 == 0 else "Two year",
-            "churn": 1 if i < 20 else 0,
-        })
+        records.append(
+            {
+                "tenure": i + 1,
+                "monthly_charges": 30.0 + i * 1.5,
+                "contract": "Month-to-month" if i % 2 == 0 else "Two year",
+                "churn": 1 if i < 20 else 0,
+            }
+        )
 
     train_payload = {
         "project_id": ml_test_project_id,
@@ -61,11 +62,13 @@ async def test_ml_train_classification_and_predict(client: AsyncClient, engineer
 async def test_ml_train_regression_and_predict(client: AsyncClient, engineer_headers, ml_test_project_id):
     records = []
     for i in range(40):
-        records.append({
-            "sqft": 1000 + i * 50,
-            "bedrooms": 2 + (i % 3),
-            "price": 200000 + i * 10000,
-        })
+        records.append(
+            {
+                "sqft": 1000 + i * 50,
+                "bedrooms": 2 + (i % 3),
+                "price": 200000 + i * 10000,
+            }
+        )
 
     train_payload = {
         "project_id": ml_test_project_id,
@@ -91,10 +94,12 @@ async def test_ml_train_regression_and_predict(client: AsyncClient, engineer_hea
 async def test_ml_train_anomaly_and_predict(client: AsyncClient, engineer_headers, ml_test_project_id):
     records = []
     for i in range(50):
-        records.append({
-            "amount": 20.0 + i * 2.0 if i < 48 else 9999.0,
-            "frequency": 1 + (i % 4),
-        })
+        records.append(
+            {
+                "amount": 20.0 + i * 2.0 if i < 48 else 9999.0,
+                "frequency": 1 + (i % 4),
+            }
+        )
 
     train_payload = {
         "project_id": ml_test_project_id,
@@ -120,10 +125,12 @@ async def test_ml_train_anomaly_and_predict(client: AsyncClient, engineer_header
 async def test_ml_train_forecasting_and_predict(client: AsyncClient, engineer_headers, ml_test_project_id):
     records = []
     for i in range(30):
-        records.append({
-            "step": i,
-            "demand": 100 + i * 3 + (i % 5),
-        })
+        records.append(
+            {
+                "step": i,
+                "demand": 100 + i * 3 + (i % 5),
+            }
+        )
 
     train_payload = {
         "project_id": ml_test_project_id,
