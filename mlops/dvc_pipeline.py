@@ -3,10 +3,11 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Dict, List, Optional
+from loguru import logger
+from mlops.base import StageDefinition
 
 def compute_file_hash(file_path: Path | str) -> str:
-    """Compute deterministic SHA-256 hash for a file."""
     path = Path(file_path)
     if not path.exists() or not path.is_file():
         return hashlib.sha256(f"missing:{path}".encode()).hexdigest()
@@ -17,9 +18,36 @@ def compute_file_hash(file_path: Path | str) -> str:
     return hasher.hexdigest()
 
 def compute_data_fingerprint(data: Any) -> str:
-    """Compute deterministic hash for arbitrary serializable data or strings."""
     if isinstance(data, (dict, list)):
         payload = json.dumps(data, sort_keys=True, default=str)
     else:
         payload = str(data)
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+class DVCPipelineManager:
+    def __init__(self, workspace_dir: Optional[Path | str] = None) -> None:
+        self.workspace_dir = Path(workspace_dir) if workspace_dir else Path.cwd()
+        self.stages: Dict[str, StageDefinition] = {}
+        self.stage_callbacks: Dict[str, Callable[..., Any]] = {}
+        self.stage_hashes: Dict[str, str] = {}
+
+    def register_stage(
+        self,
+        name: str,
+        command: str = "",
+        deps: Optional[List[str]] = None,
+        outs: Optional[List[str]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        callback: Optional[Callable[..., Any]] = None,
+    ) -> StageDefinition:
+        stage = StageDefinition(
+            name=name,
+            command=command or f"python -m scripts.{name}",
+            deps=deps or [],
+            outs=outs or [],
+            params=params or {},
+        )
+        self.stages[name] = stage
+        if callback:
+            self.stage_callbacks[name] = callback
+        return stage
