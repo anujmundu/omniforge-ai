@@ -46,3 +46,47 @@ class ModelVersion(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     tags: Dict[str, str] = Field(default_factory=dict)
+
+class RegisteredModel(BaseModel):
+    """Represents a named model entity in the model registry containing multiple versions."""
+    name: str
+    description: str = ""
+    latest_version: int = 0
+    versions: List[ModelVersion] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    tags: Dict[str, str] = Field(default_factory=dict)
+
+    def get_version(self, version: int) -> Optional[ModelVersion]:
+        for v in self.versions:
+            if v.version == version:
+                return v
+        return None
+
+    def get_stage_model(self, stage: ModelStage) -> Optional[ModelVersion]:
+        for v in reversed(self.versions):
+            if v.stage == stage:
+                return v
+        return None
+
+class MetricComparison(BaseModel):
+    """Detailed comparison between candidate and champion baseline for a specific metric."""
+    metric_name: str
+    candidate_value: float
+    champion_value: Optional[float] = None
+    delta: Optional[float] = None
+    threshold: float
+    passed: bool
+    description: str = ""
+
+class EvalGateResult(BaseModel):
+    """Result of an automated model regression and promotion evaluation gate."""
+    gate_id: str = Field(default_factory=lambda: f"gate_{uuid4().hex[:10]}")
+    model_name: str
+    candidate_version: int
+    champion_version: Optional[int] = None
+    passed: bool
+    promoted: bool = False
+    decision_reason: str
+    comparisons: List[MetricComparison] = Field(default_factory=list)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
