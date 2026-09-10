@@ -3,12 +3,13 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from loguru import logger
-from mlops.base import ExperimentRun, PipelineStatus
+from mlops.base import ExperimentRun, ModelStage, ModelVersion, PipelineStatus, RegisteredModel
 
 class MLflowRegistryManager:
     def __init__(self) -> None:
         self.experiments: Dict[str, List[str]] = {}
         self.runs: Dict[str, ExperimentRun] = {}
+        self.models: Dict[str, RegisteredModel] = {}
         self._active_run_id: Optional[str] = None
 
     def start_run(self, experiment_name: str = "default_experiment", tags: Optional[Dict[str, str]] = None) -> ExperimentRun:
@@ -57,3 +58,38 @@ class MLflowRegistryManager:
             run_ids = self.experiments.get(experiment_name, [])
             return [self.runs[r] for r in run_ids if r in self.runs]
         return list(self.runs.values())
+
+    def register_model(
+        self,
+        name: str,
+        run_id: str,
+        description: str = "",
+        artifact_uri: str = "",
+        tags: Optional[Dict[str, str]] = None,
+    ) -> ModelVersion:
+        run = self.get_run(run_id)
+        metrics = run.metrics.copy() if run else {}
+        params = run.parameters.copy() if run else {}
+
+        if name not in self.models:
+            self.models[name] = RegisteredModel(name=name, description=description)
+
+        reg_model = self.models[name]
+        new_version_num = reg_model.latest_version + 1
+        reg_model.latest_version = new_version_num
+
+        model_version = ModelVersion(
+            model_name=name,
+            version=new_version_num,
+            run_id=run_id,
+            stage=ModelStage.NONE,
+            description=description,
+            metrics=metrics,
+            parameters=params,
+            artifact_uri=artifact_uri or (run.artifact_uris[0] if run and run.artifact_uris else ""),
+            tags=tags or {},
+        )
+
+        reg_model.versions.append(model_version)
+        reg_model.updated_at = datetime.now(timezone.utc)
+        return model_version
