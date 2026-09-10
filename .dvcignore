@@ -1,0 +1,11 @@
+# DVC ignore patterns for OmniForge
+.git
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.coverage
+htmlcov/
+*.log
+.DS_Store
+Thumbs.db

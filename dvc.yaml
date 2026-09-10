@@ -1,0 +1,45 @@
+# OmniForge Declarative DVC Pipeline Specification
+stages:
+  load_data:
+    cmd: python -m scripts.load_data --config params.yaml:data
+    deps:
+      - storage/datasets/
+    outs:
+      - storage/processed/raw_split.parquet
+    params:
+      - data.train_ratio
+      - data.random_state
+
+  preprocess_features:
+    cmd: python -m scripts.preprocess --config params.yaml:preprocess
+    deps:
+      - storage/processed/raw_split.parquet
+    outs:
+      - storage/processed/features.parquet
+      - storage/processed/scaler.joblib
+    params:
+      - preprocess.imputation_strategy
+      - preprocess.scaling_method
+
+  train_model:
+    cmd: python -m scripts.train --config params.yaml:train
+    deps:
+      - storage/processed/features.parquet
+    outs:
+      - storage/models/candidate_model.joblib
+    params:
+      - train.learning_rate
+      - train.n_estimators
+      - train.max_depth
+    metrics:
+      - storage/metrics/train_metrics.json:
+          cache: false
+
+  evaluate_gate:
+    cmd: python -m scripts.evaluate_gate --config params.yaml:eval
+    deps:
+      - storage/models/candidate_model.joblib
+      - storage/processed/features.parquet
+    metrics:
+      - storage/metrics/eval_gate_summary.json:
+          cache: false
