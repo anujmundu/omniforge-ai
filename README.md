@@ -105,8 +105,7 @@ Every module in AIForge passes through 12 engineering quality gates:
 - [x] **Phase 3: Computer Vision Engine** — Object Detection (YOLO), Multi-Object Tracking (ByteTrack), Spatial OCR, Async Video Frame Stream Ingestion, and REST APIs.
 - [x] **Phase 4: NLP Pipeline** — Dense Transformer Embeddings, Span-Level NER, Text Classification, Cross-Document Semantic Similarity, and REST APIs.
 - [x] **Phase 5: Enterprise RAG Engine** — Document Ingestion (Markdown/JSON/HTML), Recursive Semantic Chunking, Dense Vector Store Collections, Cross-Encoder Reranking, Citation-Backed Q&A Generation, and Automated Evaluation.
-- [x] **Phase 6: Multi-Agent Orchestrator** — Supervisor Intent Decomposition, Domain Specialist Agents (ML, Vision, NLP, RAG), Declarative Tool Calling Mesh (@tool), and ReAct Execution Loops.
-- [ ] **Phase 7: MLOps & CI/CD** — DVC dataset versioning, MLflow stage promotion, automated release pipelines.
+- [x] **Phase 7: MLOps & CI/CD Pipelines** — DVC Data Versioning & Pipeline DAGs, MLflow Central Registry & Experiment Tracking, Automated Candidate vs. Champion Regression Evaluation Gates, Zero-Downtime Rollback Safety, and GitHub Actions CI/CD Workflows.
 - [ ] **Phase 8: Production Observability** — Prometheus metrics, Evidently data drift monitoring, Grafana dashboards.
 - [ ] **Phase 9: Adversarial Security & Red-Teaming** — Prompt injection testing, rate-limiting, RBAC penetration auditing.
 - [ ] **Phase 10: Cloud Deployment & Scaling** — Kubernetes/Helm charts, Celery/Redis asynchronous worker mesh.
