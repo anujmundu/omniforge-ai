@@ -93,3 +93,29 @@ class MLflowRegistryManager:
         reg_model.versions.append(model_version)
         reg_model.updated_at = datetime.now(timezone.utc)
         return model_version
+
+    def transition_stage(
+        self,
+        model_name: str,
+        version: int,
+        target_stage: ModelStage,
+        archive_existing_versions: bool = True,
+    ) -> ModelVersion:
+        if model_name not in self.models:
+            raise KeyError(f"Registered model '{model_name}' not found.")
+
+        reg_model = self.models[model_name]
+        target_version = reg_model.get_version(version)
+        if not target_version:
+            raise KeyError(f"Version {version} of model '{model_name}' not found.")
+
+        if target_stage == ModelStage.PRODUCTION and archive_existing_versions:
+            for v in reg_model.versions:
+                if v.stage == ModelStage.PRODUCTION and v.version != version:
+                    v.stage = ModelStage.ARCHIVED
+                    v.updated_at = datetime.now(timezone.utc)
+
+        target_version.stage = target_stage
+        target_version.updated_at = datetime.now(timezone.utc)
+        reg_model.updated_at = datetime.now(timezone.utc)
+        return target_version
