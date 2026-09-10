@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
+
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -16,6 +17,7 @@ from apps.api.routers import (
     experiments_router,
     health_router,
     ml_router,
+    mlops_router,
     nlp_router,
     projects_router,
     rag_router,
@@ -96,6 +98,7 @@ def create_application() -> FastAPI:
     app.include_router(nlp_router, prefix=settings.API_V1_STR)
     app.include_router(rag_router, prefix=settings.API_V1_STR)
     app.include_router(agents_router, prefix=settings.API_V1_STR)
+    app.include_router(mlops_router, prefix=settings.API_V1_STR)
 
     @app.get("/", tags=["Root"])
     async def root() -> dict:
