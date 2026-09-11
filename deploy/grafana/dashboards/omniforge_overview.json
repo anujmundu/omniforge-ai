@@ -1,0 +1,144 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "API Gateway Request Throughput",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(omniforge_http_requests_total[1m])) by (method, status_code)",
+          "legendFormat": "{{method}} - {{status_code}}"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "id": 2,
+      "title": "API Latency (P95 & P99)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(omniforge_http_request_duration_seconds_bucket[1m])) by (le))",
+          "legendFormat": "P95 Latency (s)"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(omniforge_http_request_duration_seconds_bucket[1m])) by (le))",
+          "legendFormat": "P99 Latency (s)"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "id": 3,
+      "title": "Continuous Data Drift Score",
+      "type": "gauge",
+      "targets": [
+        {
+          "expr": "omniforge_data_drift_score",
+          "legendFormat": "{{dataset_name}}"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+      "id": 4,
+      "title": "Classical ML Model Inference Latency",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(omniforge_ml_inference_duration_seconds_bucket[1m])) by (le, model_type))",
+          "legendFormat": "{{model_type}} P99 (s)"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
+      "id": 5,
+      "title": "Vision Video Streaming FPS",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "omniforge_vision_fps",
+          "legendFormat": "Stream {{stream_id}}"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 8 },
+      "id": 6,
+      "title": "NLP Token Throughput",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(omniforge_nlp_tokens_total[1m])) by (operation)",
+          "legendFormat": "{{operation}}"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 16 },
+      "id": 7,
+      "title": "RAG Hybrid Retrieval & Rerank Latency",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(omniforge_rag_retrieval_duration_seconds_bucket[1m])) by (le, stage))",
+          "legendFormat": "{{stage}} P95 (s)"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 16 },
+      "id": 8,
+      "title": "Autonomous Agent Step Execution Latency",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(omniforge_agent_step_duration_seconds_bucket[1m])) by (le, agent_name))",
+          "legendFormat": "{{agent_name}} P95 (s)"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 16 },
+      "id": 9,
+      "title": "System CPU & Memory Utilization",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "omniforge_system_cpu_usage_percent",
+          "legendFormat": "CPU %"
+        },
+        {
+          "expr": "omniforge_system_memory_usage_percent",
+          "legendFormat": "RAM %"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["omniforge", "production", "observability"],
+  "time": { "from": "now-6h", "to": "now" },
+  "timezone": "browser",
+  "title": "OmniForge Platform Telemetry & SLA Overview",
+  "uid": "omniforge-telemetry-overview",
+  "version": 1
+}
