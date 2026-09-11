@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from loguru import logger
@@ -19,6 +19,7 @@ from apps.api.routers import (
     ml_router,
     mlops_router,
     nlp_router,
+    observability_router,
     projects_router,
     rag_router,
     vision_router,
@@ -29,32 +30,24 @@ settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    """Application lifespan context for startup and graceful shutdown."""
-    # Setup structured logging
-    setup_logging()
-    logger.info(f"Starting {settings.PROJECT_NAME} in [{settings.ENVIRONMENT}] mode")
+    # Setup global unified logging
+    setup_logging(log_level=settings.LOG_LEVEL, log_file=settings.LOG_FILE)
+    logger.info(f"Initializing {settings.PROJECT_NAME} application state...")
 
-    # Initialize Database tables
-    try:
-        await init_db()
-        logger.info("Database schema initialized successfully.")
-    except Exception as e:
-        logger.error(f"Database initialization failed: {str(e)}")
+    # Initialize SQLite / PostgreSQL Database tables asynchronously
+    await init_db()
+    logger.info("Database schema migration and tables initialized.")
 
     yield
 
-    logger.info(f"Shutting down {settings.PROJECT_NAME}")
+    logger.info(f"Shutting down {settings.PROJECT_NAME} cleanly...")
 
 
 def create_application() -> FastAPI:
-    """Factory function for FastAPI application."""
     app = FastAPI(
-        title="OmniForge Intelligence Platform API",
-        description=(
-            "Production-Grade Multimodal AI/ML Intelligence Platform unifying "
-            "Classical ML, Computer Vision, NLP, RAG, and Agentic Orchestration."
-        ),
+        title=settings.PROJECT_NAME,
         version="0.1.0",
+        description="Production-Grade Multimodal AI/ML Intelligence Platform API Gateway.",
         openapi_url=f"{settings.API_V1_STR}/openapi.json",
         docs_url="/docs",
         redoc_url="/redoc",
@@ -99,6 +92,17 @@ def create_application() -> FastAPI:
     app.include_router(rag_router, prefix=settings.API_V1_STR)
     app.include_router(agents_router, prefix=settings.API_V1_STR)
     app.include_router(mlops_router, prefix=settings.API_V1_STR)
+    app.include_router(observability_router, prefix=settings.API_V1_STR)
+
+    @app.get("/metrics", tags=["Observability"], include_in_schema=False)
+    async def prometheus_metrics() -> Response:
+        """Root Prometheus exposition scrape endpoint."""
+        from observability.metrics import metrics_registry
+
+        return Response(
+            content=metrics_registry.generate_prometheus_text(),
+            media_type="text/plain; version=0.0.4; charset=utf-8",
+        )
 
     @app.get("/", tags=["Root"])
     async def root() -> dict:
