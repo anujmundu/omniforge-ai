@@ -106,7 +106,7 @@ Every module in AIForge passes through 12 engineering quality gates:
 - [x] **Phase 4: NLP Pipeline** — Dense Transformer Embeddings, Span-Level NER, Text Classification, Cross-Document Semantic Similarity, and REST APIs.
 - [x] **Phase 5: Enterprise RAG Engine** — Document Ingestion (Markdown/JSON/HTML), Recursive Semantic Chunking, Dense Vector Store Collections, Cross-Encoder Reranking, Citation-Backed Q&A Generation, and Automated Evaluation.
 - [x] **Phase 7: MLOps & CI/CD Pipelines** — DVC Data Versioning & Pipeline DAGs, MLflow Central Registry & Experiment Tracking, Automated Candidate vs. Champion Regression Evaluation Gates, Zero-Downtime Rollback Safety, and GitHub Actions CI/CD Workflows.
-- [ ] **Phase 8: Production Observability** — Prometheus metrics, Evidently data drift monitoring, Grafana dashboards.
+- [x] **Phase 8: Production Observability** — Prometheus metrics, Evidently data drift monitoring, Grafana dashboards.
 - [ ] **Phase 9: Adversarial Security & Red-Teaming** — Prompt injection testing, rate-limiting, RBAC penetration auditing.
 - [ ] **Phase 10: Cloud Deployment & Scaling** — Kubernetes/Helm charts, Celery/Redis asynchronous worker mesh.
 
