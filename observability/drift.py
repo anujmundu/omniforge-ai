@@ -100,3 +100,106 @@ def compute_psi(
 
 
 class StatisticalDriftEngine:
+    """Enterprise statistical distribution drift engine."""
+
+    def __init__(self, significance_level: float = 0.05, psi_threshold: float = 0.20):
+        self.significance_level = significance_level
+        self.psi_threshold = psi_threshold
+
+    def analyze_feature(
+        self,
+        ref_series: pd.Series | np.ndarray,
+        curr_series: pd.Series | np.ndarray,
+        feature_name: str,
+    ) -> FeatureDriftResult:
+        """Analyze individual feature drift using KS test for numerical and PSI for categorical features."""
+        ref_s = pd.Series(ref_series).dropna()
+        curr_s = pd.Series(curr_series).dropna()
+
+        ref_missing = float(pd.Series(ref_series).isna().mean())
+        curr_missing = float(pd.Series(curr_series).isna().mean())
+
+        # Check if numerical
+        if pd.api.types.is_numeric_dtype(ref_s) and pd.api.types.is_numeric_dtype(curr_s):
+            d_stat, p_val = compute_ks_statistic(ref_s.values, curr_s.values)
+            is_drifted = p_val < self.significance_level
+            ref_mean = float(ref_s.mean()) if len(ref_s) > 0 else 0.0
+            curr_mean = float(curr_s.mean()) if len(curr_s) > 0 else 0.0
+
+            return FeatureDriftResult(
+                feature_name=feature_name,
+                feature_type="numerical",
+                method=DriftMethod.KS_TEST,
+                test_statistic=d_stat,
+                p_value=p_val,
+                threshold=self.significance_level,
+                drift_detected=is_drifted,
+                reference_mean=round(ref_mean, 4),
+                current_mean=round(curr_mean, 4),
+                reference_missing_rate=round(ref_missing, 4),
+                current_missing_rate=round(curr_missing, 4),
+                description=f"KS-Test D={d_stat}, p-value={p_val} (alpha={self.significance_level})",
+            )
+        else:
+            # Categorical PSI test
+            psi_val = compute_psi(ref_s.values, curr_s.values)
+            is_drifted = psi_val >= self.psi_threshold
+
+            return FeatureDriftResult(
+                feature_name=feature_name,
+                feature_type="categorical",
+                method=DriftMethod.PSI,
+                test_statistic=psi_val,
+                threshold=self.psi_threshold,
+                drift_detected=is_drifted,
+                reference_missing_rate=round(ref_missing, 4),
+                current_missing_rate=round(curr_missing, 4),
+                description=f"PSI={psi_val} (threshold={self.psi_threshold})",
+            )
+
+    def calculate_dataset_drift(
+        self,
+        reference_data: pd.DataFrame | List[Dict[str, Any]],
+        current_data: pd.DataFrame | List[Dict[str, Any]],
+        dataset_name: str = "production_inference",
+        drift_share_threshold: float = 0.33,
+    ) -> DatasetDriftReport:
+        """Calculate complete dataset drift report across all aligned features."""
+        ref_df = pd.DataFrame(reference_data) if not isinstance(reference_data, pd.DataFrame) else reference_data
+        curr_df = pd.DataFrame(current_data) if not isinstance(current_data, pd.DataFrame) else current_data
+
+        common_features = [c for c in ref_df.columns if c in curr_df.columns]
+        feature_results: Dict[str, FeatureDriftResult] = {}
+        drifted_count = 0
+
+        for col in common_features:
+            res = self.analyze_feature(ref_df[col], curr_df[col], feature_name=col)
+            feature_results[col] = res
+            if res.drift_detected:
+                drifted_count += 1
+
+        total_features = len(common_features)
+        share_drifted = (drifted_count / total_features) if total_features > 0 else 0.0
+        dataset_drift_detected = share_drifted >= drift_share_threshold
+
+        report = DatasetDriftReport(
+            dataset_name=dataset_name,
+            reference_rows=len(ref_df),
+            current_rows=len(curr_df),
+            drift_detected=dataset_drift_detected,
+            share_of_drifted_features=round(share_drifted, 4),
+            number_of_features=total_features,
+            drifted_features_count=drifted_count,
+            drift_threshold=drift_share_threshold,
+            feature_results=feature_results,
+        )
+
+        logger.info(
+            f"Drift Analysis [{dataset_name}]: {drifted_count}/{total_features} features drifted "
+            f"({share_drifted:.1%}) -> Drift Detected: {dataset_drift_detected}"
+        )
+        return report
+
+
+# Global Drift Engine Instance
+drift_engine = StatisticalDriftEngine()
