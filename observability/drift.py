@@ -62,3 +62,41 @@ def compute_ks_statistic(
 
 
 def compute_psi(
+    expected: Union[np.ndarray, List[Any]], actual: Union[np.ndarray, List[Any]], num_bins: int = 10
+) -> float:
+    """Compute Population Stability Index (PSI) between expected (reference) and actual (current)."""
+    exp_arr = np.asarray(expected)
+    act_arr = np.asarray(actual)
+
+    if len(exp_arr) == 0 or len(act_arr) == 0:
+        return 0.0
+
+    # Numerical feature quantile binning
+    if np.issubdtype(exp_arr.dtype, np.number) and np.issubdtype(act_arr.dtype, np.number):
+        percentiles = np.linspace(0, 100, num_bins + 1)
+        bins = np.percentile(exp_arr, percentiles)
+        bins = np.unique(bins)
+        if len(bins) < 2:
+            return 0.0
+
+        min_val = min(float(np.min(exp_arr)), float(np.min(act_arr))) - 1e-4
+        max_val = max(float(np.max(exp_arr)), float(np.max(act_arr))) + 1e-4
+        bins[0] = min_val
+        bins[-1] = max_val
+
+        exp_counts, _ = np.histogram(exp_arr, bins=bins)
+        act_counts, _ = np.histogram(act_arr, bins=bins)
+    else:
+        # Categorical feature unique value frequency binning
+        categories = list(set(exp_arr).union(set(act_arr)))
+        exp_counts = np.array([np.sum(exp_arr == c) for c in categories])
+        act_counts = np.array([np.sum(act_arr == c) for c in categories])
+
+    exp_pct = (exp_counts + 1e-5) / (len(exp_arr) + 1e-5 * len(exp_counts))
+    act_pct = (act_counts + 1e-5) / (len(act_arr) + 1e-5 * len(act_counts))
+
+    psi_val = np.sum((act_pct - exp_pct) * np.log(act_pct / exp_pct))
+    return round(float(psi_val), 4)
+
+
+class StatisticalDriftEngine:
