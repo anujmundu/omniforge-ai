@@ -83,3 +83,30 @@ class DatasetDriftReport(BaseModel):
 
 
 class AlertRule(BaseModel):
+    """Declarative specification of an SLA threshold alerting rule."""
+
+    rule_id: str = Field(default_factory=lambda: f"rule_{uuid4().hex[:8]}")
+    name: str
+    description: str = ""
+    metric_name: str
+    condition: str = "gt"  # gt | lt | gte | lte | eq
+    threshold: float
+    severity: AlertSeverity = AlertSeverity.WARNING
+    labels: Dict[str, str] = Field(default_factory=dict)
+    enabled: bool = True
+
+
+class ActiveAlert(BaseModel):
+    """Instance of an active or resolved threshold incident."""
+
+    alert_id: str = Field(default_factory=lambda: f"alert_{uuid4().hex[:10]}")
+    rule_id: str
+    rule_name: str
+    severity: AlertSeverity
+    state: AlertState = AlertState.FIRING
+    current_value: float
+    threshold: float
+    message: str = ""
+    labels: Dict[str, str] = Field(default_factory=dict)
+    fired_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    resolved_at: Optional[datetime] = None
