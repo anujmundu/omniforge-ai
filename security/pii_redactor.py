@@ -38,3 +38,28 @@ class PIIRedactor:
         (
             PIIType.API_KEY,
             re.compile(r"\b(AKIA|ABIA|ACCA|ASIA)[0-9A-Z]{16}\b"),
+            "[REDACTED_AWS_KEY]",
+        ),
+        # OpenAI / Anthropic API Keys
+        (
+            PIIType.API_KEY,
+            re.compile(r"\b(sk-[a-zA-Z0-9_-]{20,64}|anthropic-api-key-[a-zA-Z0-9_-]{20,64})\b"),
+            "[REDACTED_API_KEY]",
+        ),
+        # JWT Bearer Tokens
+        (
+            PIIType.JWT_TOKEN,
+            re.compile(r"\beyJ[a-zA-Z0-9_-]+\.eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\b"),
+            "[REDACTED_JWT]",
+        ),
+        # RSA / EC / OpenSSH Private Keys
+        (
+            PIIType.PRIVATE_KEY,
+            re.compile(
+                r"-----BEGIN (RSA|EC|DSA|OPENSSH|ENCRYPTED)? PRIVATE KEY-----[\s\S]+?-----END \1 PRIVATE KEY-----"
+            ),
+            "[REDACTED_PRIVATE_KEY]",
+        ),
+    ]
+
+    # Regex candidate for potential credit cards (13 to 19 digits)
