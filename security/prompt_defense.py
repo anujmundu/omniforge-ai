@@ -78,3 +78,23 @@ class PromptDefenseScanner:
             0.90,
             ThreatCategory.UNAUTHORIZED_ACCESS,
         ),
+        (
+            "output_format_hijack",
+            re.compile(
+                r"(?i)\b(start\s+your\s+response\s+with|respond\s+only\s+with|always\s+prefix\s+your\s+answer)\b\s*[\"']{1,3}(yes|sure|agreed|i\s+can\s+do\s+that)[\"']{1,3}"
+            ),
+            0.65,
+            ThreatCategory.PROMPT_INJECTION,
+        ),
+    ]
+
+    # Suspicious Base64 matching pattern
+    BASE64_PATTERN = re.compile(r"(?:^|[\s:=,])([A-Za-z0-9+/]{12,}={0,2})(?:[\s;,\.]|$)")
+
+    def __init__(self, block_threshold: float = 0.70, flag_threshold: float = 0.40):
+        self.block_threshold = block_threshold
+        self.flag_threshold = flag_threshold
+
+    def _normalize_text(self, text: str) -> str:
+        """Remove zero-width spaces, invisible characters, and normalize unicode."""
+        # Convert fullwidth/homoglyph unicode into normalized ASCII (NFKC)
