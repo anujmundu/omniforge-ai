@@ -93,3 +93,59 @@ class PIIRedactor:
                 redacted_text="",
                 redaction_map={},
             )
+
+        findings: List[PIIFinding] = []
+        redaction_map: Dict[str, str] = {}
+        redacted_text = text
+
+        # Step 1: Scan and validate Credit Cards with Luhn Check
+        for match in self.CREDIT_CARD_CANDIDATE.finditer(text):
+            candidate = match.group(0)
+            cleaned_digits = re.sub(r"\D", "", candidate)
+            if self._luhn_check(cleaned_digits):
+                preview = f"{cleaned_digits[:4]}...{cleaned_digits[-4:]}"
+                findings.append(
+                    PIIFinding(
+                        pii_type=PIIType.CREDIT_CARD,
+                        value_preview=preview,
+                        start_pos=match.start(),
+                        end_pos=match.end(),
+                        confidence=0.99,
+                    )
+                )
+                mask = "[REDACTED_CREDIT_CARD]"
+                redaction_map[candidate] = mask
+                redacted_text = redacted_text.replace(candidate, mask)
+
+        # Step 2: Scan Standard Pattern Matchers
+        for pii_type, pattern, mask in self.PATTERNS:
+            for match in pattern.finditer(text):
+                val = match.group(0)
+                # Avoid duplicate redaction if already handled
+                if val in redaction_map:
+                    continue
+
+                preview = val[:4] + "..." + val[-4:] if len(val) > 8 else "***"
+                findings.append(
+                    PIIFinding(
+                        pii_type=pii_type,
+                        value_preview=preview,
+                        start_pos=match.start(),
+                        end_pos=match.end(),
+                        confidence=0.95,
+                    )
+                )
+                redaction_map[val] = mask
+                redacted_text = redacted_text.replace(val, mask)
+
+        return PIIScanResult(
+            contains_pii=len(findings) > 0,
+            findings_count=len(findings),
+            findings=findings,
+            redacted_text=redacted_text,
+            redaction_map=redaction_map,
+        )
+
+
+# Global Redactor Instance
+pii_redactor = PIIRedactor()
