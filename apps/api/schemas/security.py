@@ -43,3 +43,35 @@ class PIIRedactRequest(BaseModel):
 
 
 class PIIRedactResponse(BaseModel):
+    """Response schema containing redacted text and detected findings."""
+
+    contains_pii: bool = Field(..., description="True if any PII or secrets were found")
+    findings_count: int = Field(0, ge=0)
+    findings: List[PIIFinding] = Field(default_factory=list)
+    redacted_text: str = Field(...)
+
+
+class RateLimitCheckResponse(BaseModel):
+    """Response schema for rate limit telemetry."""
+
+    status: RateLimitStatus
+
+
+class RateLimitResetRequest(BaseModel):
+    """Request schema for resetting client rate limit bucket."""
+
+    client_id: str = Field(..., min_length=1, description="Client ID or IP to reset")
+
+
+class RedTeamAuditRequest(BaseModel):
+    """Request schema for triggering an automated red-team audit."""
+
+    include_payloads: bool = Field(True, description="Whether to include attack payloads in report")
+
+
+class SecurityAuditLogsResponse(BaseModel):
+    """Response schema listing security telemetry events."""
+
+    events_count: int = Field(..., ge=0)
+    events: List[Dict[str, Any]] = Field(default_factory=list)
+    report: Optional[RedTeamAuditReport] = Field(None)

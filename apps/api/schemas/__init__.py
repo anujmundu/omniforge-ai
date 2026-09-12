@@ -92,6 +92,16 @@ from apps.api.schemas.rag import (
     RetrieveRequest,
     RetrieveResponse,
 )
+from apps.api.schemas.security import (
+    PIIRedactRequest,
+    PIIRedactResponse,
+    PromptScanRequest,
+    PromptScanResponse,
+    RateLimitCheckResponse,
+    RateLimitResetRequest,
+    RedTeamAuditRequest,
+    SecurityAuditLogsResponse,
+)
 from apps.api.schemas.user import UserBase, UserCreate, UserResponse, UserUpdate
 from apps.api.schemas.vision import (
     BoundingBoxSchema,
@@ -217,4 +227,12 @@ __all__ = [
     "EvaluateMetricRequest",
     "EvaluateMetricResponse",
     "ResolveAlertResponse",
+    "PromptScanRequest",
+    "PromptScanResponse",
+    "PIIRedactRequest",
+    "PIIRedactResponse",
+    "RateLimitCheckResponse",
+    "RateLimitResetRequest",
+    "RedTeamAuditRequest",
+    "SecurityAuditLogsResponse",
 ]
