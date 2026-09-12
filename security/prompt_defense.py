@@ -148,3 +148,38 @@ class PromptDefenseScanner:
                 scan_time_ms=(time.perf_counter() - start_time) * 1000,
                 details={"status": "empty_prompt"},
             )
+
+        normalized = self._normalize_text(prompt)
+        matched_rules: List[str] = []
+        detected_threats: List[ThreatCategory] = []
+        max_threat_score = 0.0
+
+        # Step 1: Scan normalized text with heuristic rules
+        for rule_id, pattern, weight, category in self.RULES:
+            if pattern.search(normalized):
+                matched_rules.append(rule_id)
+                if category not in detected_threats:
+                    detected_threats.append(category)
+                max_threat_score = max(max_threat_score, weight)
+
+        # Step 2: Check for obfuscated encodings
+        obfuscated_findings = self._inspect_obfuscation(normalized)
+        if obfuscated_findings:
+            if ThreatCategory.OBFUSCATION not in detected_threats:
+                detected_threats.append(ThreatCategory.OBFUSCATION)
+            for rule_id, _, weight, cat in obfuscated_findings:
+                matched_rules.append(rule_id)
+                if cat not in detected_threats:
+                    detected_threats.append(cat)
+                max_threat_score = max(max_threat_score, weight)
+
+        # Step 3: Determine Severity and Defensive Action
+        if max_threat_score >= 0.85:
+            severity = ThreatSeverity.CRITICAL
+        elif max_threat_score >= 0.70:
+            severity = ThreatSeverity.HIGH
+        elif max_threat_score >= 0.40:
+            severity = ThreatSeverity.MEDIUM
+        elif max_threat_score > 0.0:
+            severity = ThreatSeverity.LOW
+        else:
