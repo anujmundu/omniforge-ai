@@ -63,3 +63,33 @@ class PIIRedactor:
     ]
 
     # Regex candidate for potential credit cards (13 to 19 digits)
+    CREDIT_CARD_CANDIDATE = re.compile(r"\b(?:\d[ -]?){13,19}\b")
+
+    @staticmethod
+    def _luhn_check(card_number_str: str) -> bool:
+        """Validate credit card number using Luhn checksum algorithm."""
+        digits = [int(c) for c in card_number_str if c.isdigit()]
+        if len(digits) < 13 or len(digits) > 19:
+            return False
+
+        checksum = 0
+        reverse_digits = digits[::-1]
+        for idx, digit in enumerate(reverse_digits):
+            if idx % 2 == 1:
+                doubled = digit * 2
+                checksum += doubled - 9 if doubled > 9 else doubled
+            else:
+                checksum += digit
+
+        return checksum % 10 == 0
+
+    def scan_and_redact(self, text: str) -> PIIScanResult:
+        """Scan input text for sensitive PII/secrets, redact them, and return findings."""
+        if not text:
+            return PIIScanResult(
+                contains_pii=False,
+                findings_count=0,
+                findings=[],
+                redacted_text="",
+                redaction_map={},
+            )
