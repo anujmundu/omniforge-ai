@@ -95,3 +95,24 @@ class PIIFinding(BaseModel):
     start_pos: int = Field(..., ge=0, description="Start character index")
     end_pos: int = Field(..., ge=0, description="End character index")
     confidence: float = Field(1.0, ge=0.0, le=1.0, description="Detection confidence")
+
+
+class PIIScanResult(BaseModel):
+    """Result of PII and credential scanning and redaction."""
+
+    contains_pii: bool = Field(..., description="True if any sensitive entity found")
+    findings_count: int = Field(0, ge=0, description="Total number of entities detected")
+    findings: List[PIIFinding] = Field(default_factory=list, description="List of detected PII findings")
+    redacted_text: str = Field(..., description="Safe redacted string replacing secrets with masks")
+    redaction_map: Dict[str, str] = Field(default_factory=dict, description="Mapping of masks to redacted types")
+
+
+class RateLimitStatus(BaseModel):
+    """Rate limit quota status for a client identifier."""
+
+    client_id: str = Field(..., description="Client identifier or API token")
+    tier: str = Field("free", description="Client subscription tier")
+    limit: int = Field(..., description="Maximum allowed requests per window")
+    remaining: int = Field(..., description="Remaining requests available in current window")
+    reset_seconds: int = Field(..., description="Seconds until bucket is fully refilled")
+    is_limited: bool = Field(..., description="True if client exceeded request capacity")
