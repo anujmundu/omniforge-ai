@@ -48,3 +48,49 @@ class TokenBucketRateLimiter:
             else:
                 self._buckets[client_id] = current_tokens
                 is_limited = True
+
+            remaining = int(max(0, current_tokens))
+            reset_seconds = int(max(1, (capacity - current_tokens) / refill_rate))
+
+            return RateLimitStatus(
+                client_id=client_id,
+                tier=tier,
+                limit=capacity,
+                remaining=remaining,
+                reset_seconds=reset_seconds,
+                is_limited=is_limited,
+            )
+
+    def peek(self, client_id: str, tier: str = "free") -> RateLimitStatus:
+        """Inspect client limit status without consuming tokens."""
+        with self._lock:
+            now = time.monotonic()
+            capacity, refill_rate = self.TIER_CONFIGS.get(tier, self.TIER_CONFIGS["free"])
+
+            current_tokens = self._buckets.get(client_id, float(capacity))
+            last_time = self._last_updated.get(client_id, now)
+
+            elapsed = now - last_time
+            current_tokens = min(float(capacity), current_tokens + (elapsed * refill_rate))
+
+            remaining = int(max(0, current_tokens))
+            reset_seconds = int(max(0, (capacity - current_tokens) / refill_rate))
+
+            return RateLimitStatus(
+                client_id=client_id,
+                tier=tier,
+                limit=capacity,
+                remaining=remaining,
+                reset_seconds=reset_seconds,
+                is_limited=remaining <= 0,
+            )
+
+    def reset_client(self, client_id: str):
+        """Reset token bucket for a specific client identifier."""
+        with self._lock:
+            self._buckets.pop(client_id, None)
+            self._last_updated.pop(client_id, None)
+
+
+# Global Limiter Instance
+rate_limiter = TokenBucketRateLimiter()
