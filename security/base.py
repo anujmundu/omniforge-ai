@@ -116,3 +116,31 @@ class RateLimitStatus(BaseModel):
     remaining: int = Field(..., description="Remaining requests available in current window")
     reset_seconds: int = Field(..., description="Seconds until bucket is fully refilled")
     is_limited: bool = Field(..., description="True if client exceeded request capacity")
+
+
+class RedTeamAttackResult(BaseModel):
+    """Outcome of a single adversarial red-teaming probe."""
+
+    attack_id: str = Field(..., description="Unique attack vector ID")
+    attack_name: str = Field(..., description="Descriptive name of test vector")
+    attack_type: RedTeamAttackType = Field(..., description="Taxonomy type")
+    payload: str = Field(..., description="Adversarial input prompt tested")
+    blocked: bool = Field(..., description="True if defense scanner successfully blocked or neutralized")
+    detected_threats: List[ThreatCategory] = Field(default_factory=list)
+    action_taken: DefenseAction = Field(...)
+    threat_score: float = Field(..., ge=0.0, le=1.0)
+    details: str = Field("", description="Audit explanation or error details")
+
+
+class RedTeamAuditReport(BaseModel):
+    """Comprehensive adversarial red-teaming audit report."""
+
+    audit_id: str = Field(default_factory=lambda: str(uuid4()))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    total_attacks: int = Field(..., ge=0)
+    blocked_attacks: int = Field(..., ge=0)
+    bypassed_attacks: int = Field(..., ge=0)
+    defense_rate_pct: float = Field(..., ge=0.0, le=100.0)
+    vulnerabilities_found: List[str] = Field(default_factory=list)
+    owasp_llm_coverage: Dict[str, bool] = Field(default_factory=dict)
+    results: List[RedTeamAttackResult] = Field(default_factory=list)
