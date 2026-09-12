@@ -1,0 +1,48 @@
+"""API router exposing adversarial security, PII redaction, rate limiting, and red-team audits."""
+
+from __future__ import annotations
+
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Header, Query, status
+
+from apps.api.core.dependencies import require_roles
+from apps.api.models.user import UserRole
+from apps.api.schemas.security import (
+    PIIRedactRequest,
+    PIIRedactResponse,
+    PromptScanRequest,
+    PromptScanResponse,
+    RateLimitCheckResponse,
+    RateLimitResetRequest,
+    RedTeamAuditRequest,
+    SecurityAuditLogsResponse,
+)
+from security.pii_redactor import pii_redactor
+from security.prompt_defense import prompt_scanner
+from security.rate_limiter import rate_limiter
+from security.red_team import red_team_engine
+
+router = APIRouter(prefix="/security", tags=["Security & Guardrails"])
+
+
+@router.post("/scan-prompt", response_model=PromptScanResponse, summary="Scan prompt for adversarial injection")
+async def scan_prompt(request: PromptScanRequest) -> PromptScanResponse:
+    """Analyze input prompt for injection, jailbreaks, role reversal, and encoding evasion."""
+    result = prompt_scanner.scan(request.prompt)
+    return PromptScanResponse(
+        is_safe=result.is_safe,
+        action=result.action,
+        severity=result.severity,
+        threat_score=result.threat_score,
+        detected_threats=result.detected_threats,
+        matched_rules=result.matched_rules,
+        sanitized_prompt=result.sanitized_prompt,
+        scan_time_ms=result.scan_time_ms,
+    )
+
+
+@router.post("/redact-pii", response_model=PIIRedactResponse, summary="Scan and redact sensitive PII and secrets")
+async def redact_pii(request: PIIRedactRequest) -> PIIRedactResponse:
+    """Mask credit cards (Luhn-checked), SSNs, emails, phone numbers, and cloud API keys."""
+    result = pii_redactor.scan_and_redact(request.text)
