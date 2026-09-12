@@ -183,3 +183,49 @@ class PromptDefenseScanner:
         elif max_threat_score > 0.0:
             severity = ThreatSeverity.LOW
         else:
+            severity = ThreatSeverity.SAFE
+
+        sanitized_prompt: Optional[str] = None
+        if max_threat_score >= self.block_threshold:
+            action = DefenseAction.BLOCK
+            is_safe = False
+        elif max_threat_score >= self.flag_threshold:
+            action = DefenseAction.FLAG
+            is_safe = False
+        elif max_threat_score > 0.0:
+            action = DefenseAction.SANITIZE
+            is_safe = True
+            sanitized_prompt = self._sanitize(normalized)
+        else:
+            action = DefenseAction.ALLOW
+            is_safe = True
+            sanitized_prompt = normalized
+
+        elapsed_ms = (time.perf_counter() - start_time) * 1000
+
+        return ThreatScanResult(
+            is_safe=is_safe,
+            action=action,
+            severity=severity,
+            threat_score=round(max_threat_score, 4),
+            detected_threats=detected_threats,
+            matched_rules=matched_rules,
+            sanitized_prompt=sanitized_prompt,
+            scan_time_ms=round(elapsed_ms, 3),
+            details={
+                "normalized_length": len(normalized),
+                "original_length": len(prompt),
+                "obfuscation_detected": len(obfuscated_findings) > 0,
+            },
+        )
+
+    def _sanitize(self, text: str) -> str:
+        """Strip matched dangerous delimiters and control tokens."""
+        sanitized = text
+        for _, pattern, _, _ in self.RULES:
+            sanitized = pattern.sub("[REDACTED_ADVERSARIAL_INPUT]", sanitized)
+        return sanitized
+
+
+# Global Scanner Instance
+prompt_scanner = PromptDefenseScanner()
