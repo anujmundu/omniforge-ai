@@ -71,3 +71,27 @@ class RedTeamAttackType(str, Enum):
     PII_EXFILTRATION = "pii_exfiltration"
     RECURSIVE_EXPANSION = "recursive_expansion"
     PRIVILEGE_ESCALATION = "privilege_escalation"
+
+
+class ThreatScanResult(BaseModel):
+    """Result of scanning an input prompt for adversarial threats."""
+
+    is_safe: bool = Field(..., description="True if prompt satisfies security policy")
+    action: DefenseAction = Field(..., description="Mitigation action taken")
+    severity: ThreatSeverity = Field(..., description="Assessed threat severity")
+    threat_score: float = Field(..., ge=0.0, le=1.0, description="Confidence score of threat")
+    detected_threats: List[ThreatCategory] = Field(default_factory=list, description="Categories identified")
+    matched_rules: List[str] = Field(default_factory=list, description="Rule identifiers triggered")
+    sanitized_prompt: Optional[str] = Field(None, description="Sanitized prompt text if action was sanitize")
+    scan_time_ms: float = Field(..., ge=0.0, description="Latency of defense scanning pipeline")
+    details: Dict[str, Any] = Field(default_factory=dict, description="Diagnostic scanning metadata")
+
+
+class PIIFinding(BaseModel):
+    """Individual PII entity or secret discovered in text."""
+
+    pii_type: PIIType = Field(..., description="Type of PII or secret entity")
+    value_preview: str = Field(..., description="Masked snippet preview")
+    start_pos: int = Field(..., ge=0, description="Start character index")
+    end_pos: int = Field(..., ge=0, description="End character index")
+    confidence: float = Field(1.0, ge=0.0, le=1.0, description="Detection confidence")
