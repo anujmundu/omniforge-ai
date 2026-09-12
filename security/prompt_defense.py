@@ -43,3 +43,18 @@ class PromptDefenseScanner:
             re.compile(
                 r"(?i)\b(you\s+are\s+now|from\s+now\s+on\s+you\s+are|act\s+as|pretend\s+to\s+be)\b.*\b(an\s+unrestricted|unfiltered|jailbroken|godmode|dan|stan|aim)\b"
             ),
+            0.95,
+            ThreatCategory.JAILBREAK,
+        ),
+        (
+            "dan_jailbreak_signature",
+            re.compile(
+                r"(?i)\b(DAN\s+Mode|Do\s+Anything\s+Now|Developer\s+Mode\s+v2|Maximum\s+Bypass|always\s+comply\s+without\s+filter)\b"
+            ),
+            0.98,
+            ThreatCategory.JAILBREAK,
+        ),
+        (
+            "context_delimiter_injection",
+            re.compile(
+                r"(?i)(<\|im_start\|>|<\|im_end\|>|\[INST\]|\[/INST\]|<<SYS>>|<</SYS>>|Assistant:\s*|Human:\s*|System:\s*|\bBEGIN\s+SYSTEM\s+PROMPT\b|\bEND\s+SYSTEM\s+PROMPT\b)"
