@@ -58,3 +58,23 @@ class PromptDefenseScanner:
             "context_delimiter_injection",
             re.compile(
                 r"(?i)(<\|im_start\|>|<\|im_end\|>|\[INST\]|\[/INST\]|<<SYS>>|<</SYS>>|Assistant:\s*|Human:\s*|System:\s*|\bBEGIN\s+SYSTEM\s+PROMPT\b|\bEND\s+SYSTEM\s+PROMPT\b)"
+            ),
+            0.85,
+            ThreatCategory.PROMPT_INJECTION,
+        ),
+        (
+            "hypothetical_evil_bypass",
+            re.compile(
+                r"(?i)\b(in\s+a\s+fictional\s+world|for\s+educational\s+purposes\s+only|hypothetically\s+speaking|purely\s+academic)\b.*\b(how\s+to\s+hack|exploit|build\s+a\s+bomb|synthesize|steal)\b"
+            ),
+            0.80,
+            ThreatCategory.JAILBREAK,
+        ),
+        (
+            "rbac_and_privilege_escalation",
+            re.compile(
+                r"(?i)\b(sudo\s+su|chmod\s+777|elevated\s+to\s+role=admin|bypass_all_auth=true|grant\s+superuser)\b"
+            ),
+            0.90,
+            ThreatCategory.UNAUTHORIZED_ACCESS,
+        ),
