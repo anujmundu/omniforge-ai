@@ -10,6 +10,7 @@ from apps.api.core.config import get_settings
 from apps.api.core.database import init_db
 from apps.api.core.logging_config import setup_logging
 from apps.api.middleware.request_id import RequestTimingAndCorrelationMiddleware
+from apps.api.middleware.security_guardrails import SecurityGuardrailMiddleware
 from apps.api.routers import (
     agents_router,
     auth_router,
@@ -22,6 +23,7 @@ from apps.api.routers import (
     observability_router,
     projects_router,
     rag_router,
+    security_router,
     vision_router,
 )
 
@@ -63,6 +65,9 @@ def create_application() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Security Guardrails & Rate Limiting Middleware
+    app.add_middleware(SecurityGuardrailMiddleware)
+
     # Request ID and Latency Middleware
     app.add_middleware(RequestTimingAndCorrelationMiddleware)
 
@@ -93,6 +98,7 @@ def create_application() -> FastAPI:
     app.include_router(agents_router, prefix=settings.API_V1_STR)
     app.include_router(mlops_router, prefix=settings.API_V1_STR)
     app.include_router(observability_router, prefix=settings.API_V1_STR)
+    app.include_router(security_router, prefix=settings.API_V1_STR)
 
     @app.get("/metrics", tags=["Observability"], include_in_schema=False)
     async def prometheus_metrics() -> Response:
