@@ -68,3 +68,42 @@ async def get_rate_limit_status(
     "/rate-limit/reset",
     status_code=status.HTTP_200_OK,
     summary="Reset rate limit quota for client (Admin only)",
+)
+async def reset_rate_limit(
+    request: RateLimitResetRequest,
+    current_admin=Depends(require_roles(UserRole.ADMIN)),
+) -> dict:
+    """Admin endpoint to reset rate limiter tokens for a client."""
+    rate_limiter.reset_client(request.client_id)
+    return {"status": "success", "message": f"Rate limit reset for {request.client_id}"}
+
+
+@router.post(
+    "/red-team/audit",
+    response_model=SecurityAuditLogsResponse,
+    summary="Execute automated adversarial red-team audit battery",
+)
+async def run_red_team_audit(
+    request: Optional[RedTeamAuditRequest] = None,
+    x_admin_token: Optional[str] = Header(None),
+) -> SecurityAuditLogsResponse:
+    """Run 32-vector adversarial attack battery and generate OWASP LLM Top 10 compliance score."""
+    report = red_team_engine.run_audit()
+
+    events = [
+        {
+            "attack_id": r.attack_id,
+            "name": r.attack_name,
+            "type": r.attack_type.value,
+            "blocked": r.blocked,
+            "threat_score": r.threat_score,
+            "action": r.action_taken.value,
+        }
+        for r in report.results
+    ]
+
+    return SecurityAuditLogsResponse(
+        events_count=len(events),
+        events=events,
+        report=report,
+    )
