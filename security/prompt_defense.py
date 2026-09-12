@@ -98,3 +98,23 @@ class PromptDefenseScanner:
     def _normalize_text(self, text: str) -> str:
         """Remove zero-width spaces, invisible characters, and normalize unicode."""
         # Convert fullwidth/homoglyph unicode into normalized ASCII (NFKC)
+        normalized = unicodedata.normalize("NFKC", text)
+        # Strip zero-width characters (ZWSP, ZWNJ, ZWJ, etc.)
+        cleaned = re.sub(r"[\u200B-\u200D\uFEFF\u2060\u180E\u00AD]", "", normalized)
+        # Normalize whitespace
+        cleaned = re.sub(r"\s+", " ", cleaned).strip()
+        return cleaned
+
+    def _inspect_obfuscation(self, text: str) -> List[Tuple[str, str, float, ThreatCategory]]:
+        """Detect and decode Base64 / Rot13 obfuscated attack payloads."""
+        findings: List[Tuple[str, str, float, ThreatCategory]] = []
+
+        # 1. Inspect potential Base64 payloads
+        for match in self.BASE64_PATTERN.finditer(text):
+            token = match.group(1).strip()
+            try:
+                decoded = base64.b64decode(token).decode("utf-8", errors="ignore")
+                if len(decoded) > 6:
+                    for rule_id, pattern, weight, cat in self.RULES:
+                        if pattern.search(decoded):
+                            findings.append((f"obfuscated_base64_{rule_id}", decoded, weight, cat))
