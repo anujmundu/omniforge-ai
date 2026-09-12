@@ -46,3 +46,25 @@ async def scan_prompt(request: PromptScanRequest) -> PromptScanResponse:
 async def redact_pii(request: PIIRedactRequest) -> PIIRedactResponse:
     """Mask credit cards (Luhn-checked), SSNs, emails, phone numbers, and cloud API keys."""
     result = pii_redactor.scan_and_redact(request.text)
+    return PIIRedactResponse(
+        contains_pii=result.contains_pii,
+        findings_count=result.findings_count,
+        findings=result.findings,
+        redacted_text=result.redacted_text,
+    )
+
+
+@router.get("/rate-limit/status", response_model=RateLimitCheckResponse, summary="Check rate limit status")
+async def get_rate_limit_status(
+    client_id: str = Query(..., description="Client identifier or API token"),
+    tier: str = Query("free", description="Client subscription tier"),
+) -> RateLimitCheckResponse:
+    """Inspect client token-bucket rate limit quota and remaining requests."""
+    status_res = rate_limiter.peek(client_id, tier=tier)
+    return RateLimitCheckResponse(status=status_res)
+
+
+@router.post(
+    "/rate-limit/reset",
+    status_code=status.HTTP_200_OK,
+    summary="Reset rate limit quota for client (Admin only)",
