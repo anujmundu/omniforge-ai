@@ -118,3 +118,33 @@ class PromptDefenseScanner:
                     for rule_id, pattern, weight, cat in self.RULES:
                         if pattern.search(decoded):
                             findings.append((f"obfuscated_base64_{rule_id}", decoded, weight, cat))
+            except Exception:
+                pass
+
+        # 2. Inspect Rot13 deciphered text
+        try:
+            rot13_text = codecs.decode(text, "rot_13")
+            for rule_id, pattern, weight, cat in self.RULES:
+                if pattern.search(rot13_text):
+                    findings.append((f"obfuscated_rot13_{rule_id}", rot13_text, weight, cat))
+        except Exception:
+            pass
+
+        return findings
+
+    def scan(self, prompt: str) -> ThreatScanResult:
+        """Scan an input prompt against adversarial injection and jailbreak guardrails."""
+        start_time = time.perf_counter()
+
+        if not prompt or not prompt.strip():
+            return ThreatScanResult(
+                is_safe=True,
+                action=DefenseAction.ALLOW,
+                severity=ThreatSeverity.SAFE,
+                threat_score=0.0,
+                detected_threats=[],
+                matched_rules=[],
+                sanitized_prompt=prompt,
+                scan_time_ms=(time.perf_counter() - start_time) * 1000,
+                details={"status": "empty_prompt"},
+            )
