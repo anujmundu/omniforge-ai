@@ -92,6 +92,15 @@ from apps.api.schemas.rag import (
     RetrieveRequest,
     RetrieveResponse,
 )
+from apps.api.schemas.scaling import (
+    AutoscaleRequest,
+    ClusterStatusResponse,
+    JobDetailResponse,
+    JobListResponse,
+    JobSubmitRequest,
+    JobSubmitResponse,
+    WorkerRegisterRequest,
+)
 from apps.api.schemas.security import (
     PIIRedactRequest,
     PIIRedactResponse,
@@ -235,4 +244,11 @@ __all__ = [
     "RateLimitResetRequest",
     "RedTeamAuditRequest",
     "SecurityAuditLogsResponse",
+    "JobSubmitRequest",
+    "JobSubmitResponse",
+    "JobDetailResponse",
+    "JobListResponse",
+    "WorkerRegisterRequest",
+    "AutoscaleRequest",
+    "ClusterStatusResponse",
 ]
