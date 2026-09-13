@@ -1,0 +1,97 @@
+# Default values for omniforge.
+# This is a YAML-formatted file.
+
+global:
+  environment: production
+  domain: api.omniforge.ai
+
+# API Gateway Deployment
+api:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/anujmundu/omniforge-api
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  service:
+    type: ClusterIP
+    port: 8000
+    targetPort: 8000
+  resources:
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage: 80
+
+# Async Worker Pool Deployment
+workers:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/anujmundu/omniforge-worker
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  concurrency: 4
+  resources:
+    limits:
+      cpu: "4000m"
+      memory: "8Gi"
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilizationPercentage: 80
+
+# Ingress Controller
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+  hosts:
+    - host: api.omniforge.ai
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: omniforge-tls-cert
+      hosts:
+        - api.omniforge.ai
+
+# Persistent Volume Claims
+persistence:
+  artifacts:
+    enabled: true
+    storageClass: "gp3"
+    accessMode: ReadWriteMany
+    size: 50Gi
+    mountPath: /app/storage/artifacts
+  datasets:
+    enabled: true
+    storageClass: "gp3"
+    accessMode: ReadWriteMany
+    size: 100Gi
+    mountPath: /app/storage/datasets
+
+# Redis Cache & Task Broker
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 10Gi
