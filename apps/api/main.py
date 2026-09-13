@@ -23,6 +23,7 @@ from apps.api.routers import (
     observability_router,
     projects_router,
     rag_router,
+    scaling_router,
     security_router,
     vision_router,
 )
@@ -99,6 +100,7 @@ def create_application() -> FastAPI:
     app.include_router(mlops_router, prefix=settings.API_V1_STR)
     app.include_router(observability_router, prefix=settings.API_V1_STR)
     app.include_router(security_router, prefix=settings.API_V1_STR)
+    app.include_router(scaling_router, prefix=settings.API_V1_STR)
 
     @app.get("/metrics", tags=["Observability"], include_in_schema=False)
     async def prometheus_metrics() -> Response:

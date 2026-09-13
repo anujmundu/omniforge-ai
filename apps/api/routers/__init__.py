@@ -11,6 +11,7 @@ from apps.api.routers.nlp import router as nlp_router
 from apps.api.routers.observability import router as observability_router
 from apps.api.routers.projects import router as projects_router
 from apps.api.routers.rag import router as rag_router
+from apps.api.routers.scaling import router as scaling_router
 from apps.api.routers.security import router as security_router
 from apps.api.routers.vision import router as vision_router
 
@@ -28,4 +29,5 @@ __all__ = [
     "mlops_router",
     "observability_router",
     "security_router",
+    "scaling_router",
 ]
