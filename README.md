@@ -108,7 +108,7 @@ Every module in AIForge passes through 12 engineering quality gates:
 - [x] **Phase 7: MLOps & CI/CD Pipelines** — DVC Data Versioning & Pipeline DAGs, MLflow Central Registry & Experiment Tracking, Automated Candidate vs. Champion Regression Evaluation Gates, Zero-Downtime Rollback Safety, and GitHub Actions CI/CD Workflows.
 - [x] **Phase 8: Production Observability** — Prometheus metrics, Evidently data drift monitoring, Grafana dashboards.
 - [x] **Phase 9: Adversarial Security & Red-Teaming** — Multi-layer prompt injection defense, PII/secrets redaction, token-bucket rate limiting, and automated 32-vector red-team audit battery.
-- [ ] **Phase 10: Cloud Deployment & Scaling** — Kubernetes/Helm charts, Celery/Redis asynchronous worker mesh.
+- [x] **Phase 10: Cloud Deployment & Scaling** — Cloud-native Kubernetes Helm 3.x charts, distributed Celery/Redis priority task mesh, worker pool autoscaling, and real-time HPA telemetry.
 
 ---
 
@@ -196,16 +196,59 @@ This boots up:
 - [ADR-004: Configuration & Secrets Management with Pydantic Settings](docs/adr/ADR-004-configuration-secrets-management.md)
 - [ADR-005: Unified Classical ML Pipeline & Estimator Interface](docs/adr/ADR-005-classical-ml-pipeline-architecture.md)
 - [ADR-006: Feature Store & Pipeline Serialization Strategy](docs/adr/ADR-006-feature-store-and-model-registry.md)
-- [ADR-007: Deep Learning Object Detection & Spatial Inference Architecture](docs/adr/ADR-007-deep-learning-object-detection-architecture.md)
-- [ADR-008: Real-Time Multi-Object Tracking & Video Frame Ingestion Architecture](docs/adr/ADR-008-real-time-multi-object-tracking-and-video-stream-architecture.md)
-- [ADR-009: Dense Text Embeddings & Dimensionality Reduction Architecture](docs/adr/ADR-009-dense-text-embeddings-and-dimensionality-architecture.md)
-- [ADR-010: Named Entity Recognition & Contextual Sequence Classification](docs/adr/ADR-010-named-entity-recognition-and-sequence-classification.md)
+- [ADR-007: Deep Learning Object Detection & Spatial Inference Architecture](docs/adr/ADR-007-vision-detection-and-tracking-architecture.md)
+- [ADR-008: Real-Time Multi-Object Tracking & Video Frame Ingestion Architecture](docs/adr/ADR-008-video-stream-and-spatial-ocr-pipeline.md)
+- [ADR-009: Dense Text Embeddings & Dimensionality Reduction Architecture](docs/adr/ADR-009-transformer-embedding-and-tokenization-architecture.md)
+- [ADR-010: Named Entity Recognition & Contextual Sequence Classification](docs/adr/ADR-010-named-entity-recognition-and-semantic-similarity-pipeline.md)
 - [ADR-011: Enterprise RAG Ingestion, Chunking & Parsing Architecture](docs/adr/ADR-011-enterprise-rag-ingestion-and-chunking-architecture.md)
 - [ADR-012: Hybrid Vector Retrieval & Cross-Encoder Reranking Architecture](docs/adr/ADR-012-hybrid-vector-retrieval-and-cross-encoder-reranking.md)
 - [ADR-013: Multi-Agent ReAct Orchestration & Intent Routing Architecture](docs/adr/ADR-013-multi-agent-react-orchestration-and-intent-routing.md)
 - [ADR-014: Declarative Tool Calling & Agent Execution Mesh](docs/adr/ADR-014-declarative-tool-calling-and-agent-execution-mesh.md)
+- [ADR-015: DVC Data & ML Pipeline Versioning Architecture](docs/adr/ADR-015-dvc-data-and-pipeline-versioning.md)
+- [ADR-016: MLflow Model Registry & Automated Promotion Gates](docs/adr/ADR-016-mlflow-registry-and-automated-promotion-gates.md)
+- [ADR-017: Prometheus & Grafana Production Observability Stack](docs/adr/ADR-017-prometheus-and-grafana-observability-stack.md)
+- [ADR-018: Data Drift & Statistical Monitoring with Evidently AI](docs/adr/ADR-018-data-drift-and-evidently-monitoring-architecture.md)
+- [ADR-019: Adversarial Prompt Injection & LLM Guardrails Architecture](docs/adr/ADR-019-adversarial-prompt-injection-and-llm-security-guardrails.md)
+- [ADR-020: Token-Bucket Rate Limiting & DDoS Defense Architecture](docs/adr/ADR-020-token-bucket-rate-limiting-and-ddos-defense.md)
+- [ADR-021: Kubernetes & Helm 3 Cloud-Native Deployment Architecture](docs/adr/ADR-021-kubernetes-and-helm-deployment-architecture.md)
+- [ADR-022: Distributed Task Mesh & Asynchronous Worker Pool Architecture](docs/adr/ADR-022-celery-redis-distributed-task-mesh-and-async-scaling.md)
 
 ---
 
-## License
-MIT License. Created with enterprise engineering standards by the OmniForge Team.
+## 👨‍💻 Author
+
+**Anuj Mundu**  
+Master of Computer Applications (MCA)  
+Maulana Azad National Institute of Technology (MANIT), Bhopal  
+
+### Areas of Interest
+- Artificial Intelligence
+- Agentic AI
+- Retrieval-Augmented Generation (RAG)
+- Large Language Models (LLMs)
+- Machine Learning & Deep Learning
+- Full-Stack AI Engineering
+- AI Systems Design & MLOps
+
+**Connect & Follow:**
+- **GitHub**: [https://github.com/anujmundu](https://github.com/anujmundu)
+- **LinkedIn**: [Anuj Mundu | LinkedIn](https://www.linkedin.com/in/anujmundu/)
+
+---
+
+## ⭐ Support the Project
+
+If you found this project useful:
+- ⭐ **Star** the repository
+- 🍴 **Fork** the project
+- 🛠️ **Share** suggestions and improvements
+- 💬 **Open issues** for bugs or feature requests
+
+*Every contribution helps improve the project.*
+
+---
+
+## 📄 License
+
+MIT License. Designed and engineered by **Anuj Mundu**.
+
