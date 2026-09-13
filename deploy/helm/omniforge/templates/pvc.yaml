@@ -1,0 +1,31 @@
+{{- if .Values.persistence.artifacts.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-artifacts-pvc
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-artifacts-pvc
+spec:
+  accessModes:
+    - {{ .Values.persistence.artifacts.accessMode }}
+  storageClassName: {{ .Values.persistence.artifacts.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.artifacts.size }}
+{{- end }}
+---
+{{- if .Values.persistence.datasets.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-datasets-pvc
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-datasets-pvc
+spec:
+  accessModes:
+    - {{ .Values.persistence.datasets.accessMode }}
+  storageClassName: {{ .Values.persistence.datasets.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.datasets.size }}
+{{- end }}
