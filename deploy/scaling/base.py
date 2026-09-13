@@ -52,3 +52,63 @@ class ClusterNodeRole(str, Enum):
     WORKER_CPU = "worker_cpu"
     WORKER_GPU = "worker_gpu"
     STORAGE_CACHE = "storage_cache"
+
+
+class TaskJob(BaseModel):
+    """Representation of an asynchronous job dispatched to the task mesh."""
+
+    job_id: str = Field(default_factory=lambda: f"job_{uuid4().hex[:12]}")
+    task_type: TaskType = Field(..., description="Category of workload")
+    priority: JobPriority = Field(JobPriority.DEFAULT, description="Execution priority")
+    status: JobStatus = Field(JobStatus.PENDING, description="Current execution lifecycle state")
+    payload: Dict[str, Any] = Field(default_factory=dict, description="Task execution parameters")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    retry_count: int = Field(0, ge=0, description="Number of attempted retries")
+    max_retries: int = Field(3, ge=0, description="Max allowed retries before moving to DLQ")
+    assigned_worker_id: Optional[str] = None
+    result: Optional[Dict[str, Any]] = None
+    error_message: Optional[str] = None
+    execution_time_ms: Optional[float] = None
+
+
+class TaskExecutionResult(BaseModel):
+    """Outcome of a worker processing a TaskJob."""
+
+    job_id: str = Field(...)
+    success: bool = Field(...)
+    result_data: Dict[str, Any] = Field(default_factory=dict)
+    error: Optional[str] = None
+    execution_time_ms: float = Field(..., ge=0.0)
+
+
+class WorkerNodeInfo(BaseModel):
+    """Telemetry information for a worker node in the mesh."""
+
+    worker_id: str = Field(default_factory=lambda: f"worker_{uuid4().hex[:8]}")
+    role: ClusterNodeRole = Field(ClusterNodeRole.WORKER_CPU)
+    is_active: bool = Field(True)
+    concurrency_capacity: int = Field(4, ge=1)
+    active_jobs_count: int = Field(0, ge=0)
+    total_completed_jobs: int = Field(0, ge=0)
+    last_heartbeat: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    cpu_utilization_pct: float = Field(0.0, ge=0.0, le=100.0)
+    memory_utilization_pct: float = Field(0.0, ge=0.0, le=100.0)
+
+
+class ClusterHealthSummary(BaseModel):
+    """Real-time cluster topology and scaling telemetry."""
+
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    cluster_name: str = Field("omniforge-production-cluster")
+    total_nodes: int = Field(..., ge=0)
+    active_workers: int = Field(..., ge=0)
+    total_concurrency_slots: int = Field(..., ge=0)
+    queue_depth_pending: int = Field(..., ge=0)
+    queue_depth_running: int = Field(..., ge=0)
+    queue_depth_dlq: int = Field(..., ge=0)
+    avg_cpu_utilization_pct: float = Field(..., ge=0.0, le=100.0)
+    avg_memory_utilization_pct: float = Field(..., ge=0.0, le=100.0)
+    hpa_recommended_replicas: int = Field(..., ge=1)
+    workers: List[WorkerNodeInfo] = Field(default_factory=list)
