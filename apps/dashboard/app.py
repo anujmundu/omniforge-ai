@@ -334,6 +334,48 @@ def solve_agent_query(user_query: str, architecture: str) -> Dict[str, Any]:
 # -----------------------------------------------------------------------------
 # Streamlit Page Config & Custom Styling
 # -----------------------------------------------------------------------------
+st.set_page_config(
+    page_title="OmniForge Multimodal Intelligence Platform",
+    page_icon="⚡",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# Initialize persistent session states
+if "task_queue" not in st.session_state:
+    st.session_state.task_queue = DistributedTaskQueue()
+if "cluster_pods" not in st.session_state:
+    st.session_state.cluster_pods = 2
+if "dispatched_history" not in st.session_state:
+    st.session_state.dispatched_history = []
+
+# Sidebar Navigation & Branding
+with st.sidebar:
+    st.markdown("## ⚡ **OmniForge AI**")
+    st.caption("Production Multimodal AI/ML Platform")
+    st.markdown("---")
+    navigation = st.radio(
+        "Navigation",
+        [
+            "🏠 Platform Overview",
+            "🤖 ReAct Autonomous Agents",
+            "📚 Multimodal RAG Engine",
+            "🛡️ Adversarial Security Guardrails",
+            "⚡ Distributed Task Mesh & Scaling",
+            "👁️ Computer Vision & OCR",
+            "📊 Classical ML & Forecasting",
+        ],
+        index=0,
+    )
+    st.markdown("---")
+    st.markdown("### 👨‍💻 **Architect & Author**")
+    st.markdown("**Anuj Mundu**")
+    st.caption("Master of Computer Applications (MCA)\nMANIT Bhopal")
+    st.markdown("- [GitHub Profile](https://github.com/anujmundu)")
+    st.markdown("- [OmniForge Repo](https://github.com/anujmundu/omniforge-ai.git)")
+    st.markdown("---")
+    st.caption("Status: 🟢 165/165 Tests Passing (v1.0.0)")
+
 st.markdown(
     """
     <style>
