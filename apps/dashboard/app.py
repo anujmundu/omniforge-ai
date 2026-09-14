@@ -887,24 +887,41 @@ elif navigation == "🤖 ReAct Autonomous Agents":
         unsafe_allow_html=True,
     )
 
-    agent_type = st.selectbox(
-        "Select Agent Architecture", ["ReAct (Reasoning + Acting)", "Plan & Solve", "Code & Math Specialist"]
-    )
+    col_arch1, col_arch2 = st.columns([1, 1])
+    with col_arch1:
+        agent_type = st.selectbox(
+            "Select Agent Architecture", ["ReAct (Reasoning + Acting)", "Plan & Solve", "Code & Math Specialist"]
+        )
+    with col_arch2:
+        category_choice = st.selectbox(
+            "Explore Domain Presets:",
+            [
+                "✨ (Custom / Universal Query)",
+                "🧮 Math, Matrices & Calculus",
+                "💻 LeetCode & Data Structures",
+                "🧠 Deep Learning & PyTorch",
+                "🔬 Quantum Computing & Physics",
+                "💼 Financial Engineering & ROI",
+                "🌐 Distributed Cloud & K8s Architecture",
+            ],
+        )
 
-    preset_goals = [
-        "Plan a Fibonacci Series Concept to 10 and write the code",
-        "Calculate the compound growth of $25,000 at an 8.5% annual return for 6 years, and summarize the financial gain.",
-        "Implement a Binary Search algorithm in Python with time complexity O(log n) and test with [2, 5, 8, 12, 16, 23, 38, 56, 72, 91] searching for 23.",
-        "Compute the hypotenuse of a right-angled triangle with sides 45 meters and 60 meters, and convert to kilometers.",
-        "Explain how the OmniForge distributed task mesh handles priority preemption when critical jobs arrive.",
-        "How do I architect an automated continuous training pipeline with MLflow and DVC?",
-    ]
-    selected_preset = st.selectbox(
-        "Select a sample goal or enter custom goal below:", ["(Custom Query)"] + preset_goals
-    )
+    preset_map = {
+        "🧮 Math, Matrices & Calculus": "Calculate the eigenvalues and eigenvectors of a 2x2 matrix [[4, 1], [2, 3]] with characteristic polynomial proof",
+        "💻 LeetCode & Data Structures": "Implement an LRU (Least Recently Used) cache with O(1) get and put using a doubly linked list and hashmap",
+        "🧠 Deep Learning & PyTorch": "Write a PyTorch Scaled Dot-Product Attention layer with tensor shape verification",
+        "🔬 Quantum Computing & Physics": "Simulate a 2-qubit Bell State quantum circuit and compute measurement state probabilities",
+        "💼 Financial Engineering & ROI": "Calculate the compound growth of $25,000 at an 8.5% annual return for 6 years, and summarize the financial gain.",
+        "🌐 Distributed Cloud & K8s Architecture": "Explain how the OmniForge distributed task mesh handles priority preemption when critical jobs arrive.",
+        "✨ (Custom / Universal Query)": "Plan a Fibonacci Series Concept to 10 and write the code",
+    }
 
-    default_text = preset_goals[0] if selected_preset == "(Custom Query)" else selected_preset
-    user_prompt = st.text_area("Agent Goal / User Query (Type any question or command):", value=default_text, height=90)
+    initial_prompt = preset_map.get(category_choice, "Plan a Fibonacci Series Concept to 10 and write the code")
+    user_prompt = st.text_area(
+        "Agent Goal / User Query (Ask anything across Math, Code, AI, Science, or Systems):",
+        value=initial_prompt,
+        height=90,
+    )
 
     if st.button("🚀 Execute Autonomous Agent", type="primary"):
         with st.spinner(f"Agent ({agent_type}) formulating plan, executing tools, and synthesizing output..."):
@@ -922,8 +939,17 @@ elif navigation == "🤖 ReAct Autonomous Agents":
             st.markdown("---")
             st.markdown("### 🏁 **Final Agent Deliverable**")
             st.markdown(result["summary"])
+
             if result.get("code"):
+                st.markdown("#### 💻 **Synthesized Production Code:**")
                 st.code(result["code"], language="python")
+                st.download_button(
+                    label="📥 Download Solution as Python File (.py)",
+                    data=result["code"],
+                    file_name="omniforge_agent_solution.py",
+                    mime="text/x-python",
+                )
+
 
 # -----------------------------------------------------------------------------
 # Tab 3: Multimodal RAG Engine
