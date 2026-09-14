@@ -182,7 +182,7 @@ class EnterpriseRAGAgent(BaseAgent):
         step = AgentStep(step_index=1, thought=thought, action=action, observation=obs)
 
         results = tool_res.output.get("results", [])
-        snippets = " ".join([f"[{i+1}] {r['chunk_text']}" for i, r in enumerate(results)])
+        snippets = " ".join([f"[{i + 1}] {r['chunk_text']}" for i, r in enumerate(results)])
         ans = f"RAG Knowledge Base Search complete: Retrieved {len(results)} verified passages: {snippets}"
 
         latency = (time.perf_counter() - start_time) * 1000.0

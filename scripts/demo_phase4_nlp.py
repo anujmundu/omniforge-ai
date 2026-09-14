@@ -113,8 +113,8 @@ def demo_text_classification(classifier: TextClassifier):
 
     for text, labels in samples:
         res = classifier.classify(text, candidate_labels=labels)
-        dist_str = ", ".join([f"{p.label}: {p.score*100:.1f}%" for p in res.probabilities])
-        table.add_row(text, res.top_label, f"{res.top_score*100:.1f}%", dist_str)
+        dist_str = ", ".join([f"{p.label}: {p.score * 100:.1f}%" for p in res.probabilities])
+        table.add_row(text, res.top_label, f"{res.top_score * 100:.1f}%", dist_str)
 
     console.print(table)
     console.print("   [bold green][OK][/bold green] Softmax probability distributions computed across target classes.")
