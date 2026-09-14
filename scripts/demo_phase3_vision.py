@@ -87,7 +87,9 @@ def demo_multi_object_tracking(detector: ObjectDetector, tracker: MultiObjectTra
         det_res = detector.detect(frame, frame_index=idx, timestamp_ms=ts_ms)
         track_res = tracker.update(det_res.detections, frame_index=idx, timestamp_ms=ts_ms)
 
-        tracks_desc = ", ".join([f"#{t.track_id} {t.label} ({t.confidence*100:.0f}%)" for t in track_res.active_tracks])
+        tracks_desc = ", ".join(
+            [f"#{t.track_id} {t.label} ({t.confidence * 100:.0f}%)" for t in track_res.active_tracks]
+        )
         total_history = sum(len(t.history_centers) for t in track_res.active_tracks)
 
         track_table.add_row(

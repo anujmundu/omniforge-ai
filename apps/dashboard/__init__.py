@@ -1,0 +1,1 @@
+"""OmniForge Streamlit Dashboard Application."""

@@ -103,7 +103,7 @@ class ModelEvaluationGate:
             if champ_lat is not None and champ_lat > 0:
                 lat_ratio = (cand_lat - champ_lat) / champ_lat
                 passed = lat_ratio <= self.max_latency_p95_increase_ratio
-                desc = f"p95 latency: Candidate={cand_lat:.1f}ms vs Champion={champ_lat:.1f}ms (delta={lat_ratio*100:+.1f}%, max allowed=+{self.max_latency_p95_increase_ratio*100:.1f}%)"
+                desc = f"p95 latency: Candidate={cand_lat:.1f}ms vs Champion={champ_lat:.1f}ms (delta={lat_ratio * 100:+.1f}%, max allowed=+{self.max_latency_p95_increase_ratio * 100:.1f}%)"
             else:
                 lat_ratio = 0.0
                 passed = cand_lat < 500.0  # Max 500ms hard ceiling
