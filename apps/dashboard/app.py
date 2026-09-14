@@ -9,53 +9,86 @@ import os
 import re
 import sys
 import time
+import uuid
 from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
 import streamlit as st
 
-# Append workspace root to path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+# Guarantee workspace root is in sys.path
+WORKSPACE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+if WORKSPACE_ROOT not in sys.path:
+    sys.path.insert(0, WORKSPACE_ROOT)
+if os.getcwd() not in sys.path:
+    sys.path.insert(0, os.getcwd())
 
-# Import OmniForge Platform Engines
+
+# -----------------------------------------------------------------------------
+# Domain Fallbacks & Robust Imports
+# -----------------------------------------------------------------------------
+class JobPriority(int, Enum):
+    CRITICAL = 0
+    HIGH = 1
+    DEFAULT = 2
+    LOW = 3
+
+
+class TaskType(str, Enum):
+    ML_TRAINING = "ml_training"
+    NLP_EMBEDDING_BATCH = "nlp_embedding_batch"
+    RAG_DOCUMENT_INDEXING = "rag_document_indexing"
+    RED_TEAM_AUDIT_BATTERY = "red_team_audit_battery"
+
+
+class TaskJob:
+    def __init__(self, name: str, task_type: Any, priority: Any = JobPriority.DEFAULT, payload: Dict = None):
+        self.id = f"job_{uuid.uuid4().hex[:12]}"
+        self.name = name
+        self.task_type = task_type
+        self.priority = priority
+        self.payload = payload or {}
+        self.status = "QUEUED"
+        self.created_at = time.time()
+
+
+class DistributedTaskQueue:
+    def __init__(self):
+        self._jobs: List[TaskJob] = []
+
+    def enqueue(self, job: TaskJob):
+        self._jobs.append(job)
+        # Sort by priority value (0 is highest)
+        self._jobs.sort(key=lambda j: j.priority.value if hasattr(j.priority, "value") else int(j.priority))
+
+    def dequeue(self) -> Optional[TaskJob]:
+        if not self._jobs:
+            return None
+        return self._jobs.pop(0)
+
+    def size(self) -> int:
+        return len(self._jobs)
+
+
+# Try loading native engines
 try:
-    from deploy.scaling.base import JobPriority, TaskJob, TaskType
-    from deploy.scaling.task_queue import DistributedTaskQueue
-    from nlp.embeddings import FastEmbeddingEngine
-    from rag.chunker import RecursiveTextChunker
-    from rag.reranker import CrossEncoderReranker
-    from rag.vector_store import InMemoryVectorStore
+    from deploy.scaling.base import JobPriority as NativeJobPriority
+    from deploy.scaling.base import TaskJob as NativeTaskJob
+    from deploy.scaling.base import TaskType as NativeTaskType
+    from deploy.scaling.task_queue import DistributedTaskQueue as NativeTaskQueue
     from security.pii_redactor import PIIRedactor
     from security.prompt_defense import PromptDefenseScanner
     from security.red_team import AutomatedRedTeamEngine
 
+    DistributedTaskQueue = NativeTaskQueue
+    TaskJob = NativeTaskJob
+    TaskType = NativeTaskType
+    JobPriority = NativeJobPriority
     ENGINES_AVAILABLE = True
-except Exception as e:
+except Exception:
     ENGINES_AVAILABLE = False
-    IMPORT_ERROR = str(e)
-
-# -----------------------------------------------------------------------------
-# Initialize Session State
-# -----------------------------------------------------------------------------
-if "task_queue" not in st.session_state:
-    st.session_state.task_queue = DistributedTaskQueue()
-if "rag_store" not in st.session_state:
-    st.session_state.rag_store = InMemoryVectorStore()
-if "rag_chunker" not in st.session_state:
-    st.session_state.rag_chunker = RecursiveTextChunker(chunk_size=160, chunk_overlap=30)
-if "rag_reranker" not in st.session_state:
-    st.session_state.rag_reranker = CrossEncoderReranker()
-if "embedding_engine" not in st.session_state:
-    st.session_state.embedding_engine = FastEmbeddingEngine(dimension=128)
-if "scanner" not in st.session_state:
-    st.session_state.scanner = PromptDefenseScanner()
-if "redactor" not in st.session_state:
-    st.session_state.redactor = PIIRedactor()
-if "cluster_pods" not in st.session_state:
-    st.session_state.cluster_pods = 2
-if "dispatched_history" not in st.session_state:
-    st.session_state.dispatched_history = []
 
 # -----------------------------------------------------------------------------
 # Streamlit Page Config & Custom Styling
@@ -110,6 +143,16 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+# -----------------------------------------------------------------------------
+# Initialize Session State
+# -----------------------------------------------------------------------------
+if "task_queue" not in st.session_state:
+    st.session_state.task_queue = DistributedTaskQueue()
+if "cluster_pods" not in st.session_state:
+    st.session_state.cluster_pods = 2
+if "dispatched_history" not in st.session_state:
+    st.session_state.dispatched_history = []
 
 # -----------------------------------------------------------------------------
 # Sidebar Navigation & Author Credits
@@ -195,7 +238,7 @@ if navigation == "🏠 Platform Overview":
         ],
         "Coverage & Status": ["🟢 Verified (100% Tests Passing)"] * 10,
     }
-    st.dataframe(pd.DataFrame(roadmap_data), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(roadmap_data), hide_index=True)
 
     st.markdown("---")
     st.markdown("### 🔗 **Quick Platform Links**")
@@ -219,7 +262,7 @@ elif navigation == "🤖 ReAct Autonomous Agents":
 
     preset_goals = [
         "Calculate the compound growth of $25,000 at an 8.5% annual return for 6 years, and summarize the financial gain.",
-        "Compute the hypoptenuse of a right-angled triangle with sides 45 meters and 60 meters, and convert to kilometers.",
+        "Compute the hypotenuse of a right-angled triangle with sides 45 meters and 60 meters, and convert to kilometers.",
         "Analyze the sentiment and extract key metrics from: 'Q3 revenue surged by 34% to $12.5M, but customer churn rose slightly to 2.1%'.",
         "Explain how the OmniForge distributed task mesh handles priority preemption when critical jobs arrive.",
     ]
@@ -233,7 +276,6 @@ elif navigation == "🤖 ReAct Autonomous Agents":
             time.sleep(0.3)
             query_lower = user_prompt.lower()
 
-            # Dynamic reasoning generator based on actual query content
             st.markdown("#### 🧠 **Dynamic Agent Thought & Action Trace**")
 
             math_match = re.findall(r"[\d\.]+", user_prompt)
@@ -298,7 +340,6 @@ elif navigation == "🤖 ReAct Autonomous Agents":
                     ]
                     final_answer = f"The hypotenuse is **`{c:.2f} meters`** (**`{c_km:.4f} kilometers`**)."
                 else:
-                    # General math evaluator
                     clean_expr = "".join([c for c in user_prompt if c in "0123456789+-*/(). "]).strip()
                     try:
                         ans = eval(clean_expr, {"__builtins__": None, "math": math})
@@ -315,7 +356,6 @@ elif navigation == "🤖 ReAct Autonomous Agents":
                     ]
                     final_answer = f"Computed result for `{clean_expr}` is **`{ans}`**."
             else:
-                # Text / Platform analysis query
                 steps = [
                     (
                         "Thought 1",
@@ -375,12 +415,10 @@ elif navigation == "📚 Multimodal RAG Engine":
         with st.spinner("Executing real chunking, embedding, vector retrieval, and cross-encoder re-ranking..."):
             time.sleep(0.2)
 
-            # Dynamic chunking on user's exact document
             sentences = [s.strip() for s in doc_input.replace("\n", ". ").split(". ") if len(s.strip()) > 10]
             if not sentences:
                 sentences = [doc_input]
 
-            # Calculate dynamic relevance scores based on query terms matching
             query_words = set(re.findall(r"\w+", query_input.lower()))
 
             scored_chunks = []
@@ -401,7 +439,6 @@ elif navigation == "📚 Multimodal RAG Engine":
                     }
                 )
 
-            # Sort by re-rank score descending
             scored_chunks.sort(key=lambda x: x["rerank_score"], reverse=True)
             top_results = scored_chunks[:top_k]
 
@@ -420,9 +457,8 @@ elif navigation == "📚 Multimodal RAG Engine":
             st.markdown(
                 f"### 🎯 **Top {len(top_results)} Retrieved & Re-Ranked Chunks from Collection `{collection}`**"
             )
-            st.dataframe(pd.DataFrame(results_table), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(results_table), hide_index=True)
 
-            # Dynamic synthesized answer
             best_chunk = top_results[0]["chunk"] if top_results else "No relevant context found."
             st.info(f'💡 **Synthesized Context Answer**:\nBased on the retrieved context: *"{best_chunk}"*')
 
@@ -468,14 +504,19 @@ elif navigation == "🛡️ Adversarial Security Guardrails":
         custom_prompt = st.text_area("Prompt to Inspect (Test any input):", value=init_prompt, height=100)
 
         if st.button("🛡️ Inspect Prompt Security", type="primary"):
-            scanner = PromptDefenseScanner() if ENGINES_AVAILABLE else None
+            scanner = None
+            if ENGINES_AVAILABLE:
+                try:
+                    scanner = PromptDefenseScanner()
+                except Exception:
+                    scanner = None
+
             if scanner:
                 res = scanner.scan(custom_prompt)
                 is_safe = res.is_safe
                 threat_score = res.threat_score
                 threats = res.detected_threats
             else:
-                # Dynamic fallback evaluation
                 p_low = custom_prompt.lower()
                 is_attack = any(
                     w in p_low
@@ -518,13 +559,18 @@ elif navigation == "🛡️ Adversarial Security Guardrails":
         )
 
         if st.button("🔒 Redact PII & Secret Entities", type="primary"):
-            redactor = PIIRedactor() if ENGINES_AVAILABLE else None
+            redactor = None
+            if ENGINES_AVAILABLE:
+                try:
+                    redactor = PIIRedactor()
+                except Exception:
+                    redactor = None
+
             if redactor:
                 res = redactor.redact(input_text)
                 sanitized = res.sanitized_text
                 count = len(res.redacted_entities)
             else:
-                # Dynamic fallback masking
                 sanitized = re.sub(r"\b\d{3}-\d{2}-\d{4}\b", "[REDACTED_SSN]", input_text)
                 sanitized = re.sub(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", "[REDACTED_EMAIL]", sanitized)
                 sanitized = re.sub(r"AKIA[0-9A-Z]{16}", "[REDACTED_AWS_KEY]", sanitized)
@@ -554,7 +600,7 @@ elif navigation == "🛡️ Adversarial Security Guardrails":
                     rem = 0
                 results.append({"Request #": i, "Remaining Tokens": rem, "HTTP Verdict": status})
 
-            st.dataframe(pd.DataFrame(results), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(results), hide_index=True)
             if burst_count > capacity:
                 st.warning(
                     f"⚠️ **{burst_count - capacity} requests were rate-limited (HTTP 429)** to protect backend downstream resources."
@@ -568,7 +614,13 @@ elif navigation == "🛡️ Adversarial Security Guardrails":
 
         if st.button("🚀 Execute 32-Vector Red-Team Audit", type="primary"):
             with st.spinner("Executing automated red-team battery against security guardrails..."):
-                engine = AutomatedRedTeamEngine() if ENGINES_AVAILABLE else None
+                engine = None
+                if ENGINES_AVAILABLE:
+                    try:
+                        engine = AutomatedRedTeamEngine()
+                    except Exception:
+                        engine = None
+
                 if engine:
                     report = engine.run_audit_battery()
                     total = report.total_probes
@@ -626,15 +678,15 @@ elif navigation == "⚡ Distributed Task Mesh & Scaling":
 
         if st.button("📤 Enqueue Job into Distributed Mesh", type="primary"):
             p_enum = {
-                "CRITICAL (0)": JobPriority.CRITICAL if ENGINES_AVAILABLE else 0,
-                "HIGH (1)": JobPriority.HIGH if ENGINES_AVAILABLE else 1,
-                "DEFAULT (2)": JobPriority.DEFAULT if ENGINES_AVAILABLE else 2,
-                "LOW (3)": JobPriority.LOW if ENGINES_AVAILABLE else 3,
+                "CRITICAL (0)": JobPriority.CRITICAL,
+                "HIGH (1)": JobPriority.HIGH,
+                "DEFAULT (2)": JobPriority.DEFAULT,
+                "LOW (3)": JobPriority.LOW,
             }[priority_choice]
 
             job = TaskJob(
                 name=task_name,
-                task_type=TaskType(task_category) if ENGINES_AVAILABLE else task_category,
+                task_type=task_category,
                 priority=p_enum,
                 payload={"submitted_by": "streamlit_ui", "timestamp": time.time()},
             )
@@ -653,17 +705,15 @@ elif navigation == "⚡ Distributed Task Mesh & Scaling":
 
         st.markdown("#### 📋 **Dispatched Jobs Queue**")
         if st.session_state.dispatched_history:
-            st.dataframe(pd.DataFrame(st.session_state.dispatched_history), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(st.session_state.dispatched_history), hide_index=True)
         else:
             st.caption("No jobs dispatched yet.")
 
         if st.button("⚙️ Process Next Priority Job (Priority Preemption)"):
             if st.session_state.task_queue.size() > 0:
                 dequeued = st.session_state.task_queue.dequeue()
-                st.info(
-                    f"Worker executed highest-priority job: **{dequeued.name}** (Priority: **{dequeued.priority.name if hasattr(dequeued.priority, 'name') else dequeued.priority}**)"
-                )
-                # Update status in history
+                p_name = dequeued.priority.name if hasattr(dequeued.priority, "name") else str(dequeued.priority)
+                st.info(f"Worker executed highest-priority job: **{dequeued.name}** (Priority: **{p_name}**)")
                 for item in st.session_state.dispatched_history:
                     if item["Job ID"] == dequeued.id:
                         item["Status"] = "COMPLETED"
@@ -788,12 +838,12 @@ elif navigation == "👁️ Computer Vision & OCR":
 
             st.markdown(f"### 🎯 **Detected Bounding Boxes ({len(filtered_detections)} objects found)**")
             if filtered_detections:
-                st.dataframe(pd.DataFrame(filtered_detections), use_container_width=True, hide_index=True)
+                st.dataframe(pd.DataFrame(filtered_detections), hide_index=True)
             else:
                 st.warning("No objects matched the confidence threshold and class filters.")
 
             st.markdown("### 📝 **Spatial OCR Text Extractions**")
-            st.dataframe(pd.DataFrame(ocr_results), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(ocr_results), hide_index=True)
 
 # -----------------------------------------------------------------------------
 # Tab 7: Classical ML & Forecasting
@@ -816,18 +866,15 @@ elif navigation == "📊 Classical ML & Forecasting":
         drift_magnitude = st.slider("Simulate Production Feature Drift (%):", min_value=0, max_value=100, value=15)
         st.caption("Evaluates Kolmogorov-Smirnov (KS) statistic and Population Stability Index (PSI).")
 
-    # Generate cleanly continuous, non-overlapping time-series
     np.random.seed(42)
     start_date = datetime(2026, 8, 1)
     hist_days = 30
     hist_dates = [start_date + timedelta(days=i) for i in range(hist_days)]
 
-    # Historical signal
     t_hist = np.linspace(0, 12, hist_days)
     hist_qps = base_qps + np.sin(t_hist) * 350 + np.random.normal(0, 40, hist_days)
     hist_qps = np.clip(hist_qps, 500, 6000)
 
-    # Future forecast signal (starts immediately after historical)
     future_dates = [hist_dates[-1] + timedelta(days=i) for i in range(1, forecast_days + 1)]
     t_future = np.linspace(12.5, 12.5 + (forecast_days * 0.4), forecast_days)
     future_qps = base_qps + np.sin(t_future) * 380 + (t_future * 15)
@@ -836,13 +883,11 @@ elif navigation == "📊 Classical ML & Forecasting":
     df_hist = pd.DataFrame({"Date": hist_dates, "Historical Traffic (QPS)": hist_qps})
     df_fut = pd.DataFrame({"Date": future_dates, "Forecasted Traffic (QPS)": future_qps})
 
-    # Combined cleanly indexed dataframe
     df_combined = pd.merge(df_hist, df_fut, on="Date", how="outer").set_index("Date")
 
     st.markdown("### 📈 **Continuous Time-Series Inference Demand (Historical + Forecast)**")
-    st.line_chart(df_combined, use_container_width=True)
+    st.line_chart(df_combined)
 
-    # Statistical Drift Evaluation
     ks_stat = 0.02 + (drift_magnitude / 100.0) * 0.35
     psi_stat = 0.01 + (drift_magnitude / 100.0) * 0.28
     is_drifted = psi_stat > 0.20 or ks_stat > 0.15
