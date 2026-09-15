@@ -1,4 +1,58 @@
 apiVersion: apps/v1
+---
+# Jaeger all-in-one deployment (optional, for local dev)
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger-collector
+  labels:
+    app: jaeger
+spec:
+  ports:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+    - name: ui
+      port: 16686
+      targetPort: 16686
+  selector:
+    app: jaeger
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger-collector
+  labels:
+    app: jaeger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+    spec:
+      containers:
+        - name: jaeger
+          image: jaegertracing/all-in-one:latest
+          env:
+            - name: COLLECTOR_OTLP_ENABLED
+              value: "true"
+            - name: WORKER_CONCURRENCY
+              value: "{{ .Values.workers.concurrency }}"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "{{ .Values.global.otlpEndpoint | default \"http://jaeger-collector:4317\" }}"
+            - name: OTEL_SERVICE_NAME
+              value: "{{ .Values.global.serviceName | default \"omniforge-worker\" }}"
+          ports:
+            - containerPort: 4317
+            - containerPort: 4318
+            - containerPort: 16686
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-api
@@ -36,6 +90,11 @@ spec:
                 name: {{ .Release.Name }}-config
             - secretRef:
                 name: {{ .Release.Name }}-secrets
+          env:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "{{ .Values.global.otlpEndpoint | default \"http://jaeger-collector:4317\" }}"
+            - name: OTEL_SERVICE_NAME
+              value: "{{ .Values.global.serviceName | default \"omniforge-api\" }}"
           livenessProbe:
             httpGet:
               path: /api/v1/health
