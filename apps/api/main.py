@@ -6,7 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from loguru import logger
 
+try:
+    from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+    _HAS_OTEL_FASTAPI = True
+except ImportError:
+    _HAS_OTEL_FASTAPI = False
+
 from apps.api.core.config import get_settings
+from apps.api.observability.tracing import init_tracing
 from apps.api.core.database import init_db
 from apps.api.core.logging_config import setup_logging
 from apps.api.middleware.request_id import RequestTimingAndCorrelationMiddleware
@@ -36,6 +43,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Setup global unified logging
     setup_logging(log_level=settings.LOG_LEVEL, log_file=settings.LOG_FILE)
     logger.info(f"Initializing {settings.PROJECT_NAME} application state...")
+    init_tracing()
 
     # Initialize SQLite / PostgreSQL Database tables asynchronously
     await init_db()
@@ -48,6 +56,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 def create_application() -> FastAPI:
     app = FastAPI(
+    # Instrument FastAPI with OpenTelemetry for tracing and metrics
         title=settings.PROJECT_NAME,
         version="1.0.0",
         description="OmniForge — Enterprise Production-Grade Multimodal AI/ML Intelligence Platform API Gateway.",
@@ -122,7 +131,12 @@ def create_application() -> FastAPI:
             "health": f"{settings.API_V1_STR}/health",
         }
 
+    # Instrument the FastAPI app for OpenTelemetry
+    if _HAS_OTEL_FASTAPI:
+        try:
+            FastAPIInstrumentor.instrument_app(app)
+        except Exception as exc:
+            logger.warning(f"OpenTelemetry FastAPI instrumentation skipped: {exc}")
     return app
-
 
 app = create_application()
