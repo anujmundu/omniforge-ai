@@ -8,6 +8,7 @@ try:
     from opentelemetry.sdk.resources import Resource
     from opentelemetry.sdk.trace import TracerProvider
     from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
     _HAS_OTEL = True
 except ImportError:
     _HAS_OTEL = False
@@ -38,4 +39,3 @@ def init_tracing():
     except Exception as exc:
         logger.warning(f"OpenTelemetry initialization encountered an issue: {exc}. Tracing disabled.")
         return None
-
