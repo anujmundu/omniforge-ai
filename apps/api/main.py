@@ -13,11 +13,11 @@ except ImportError:
     _HAS_OTEL_FASTAPI = False
 
 from apps.api.core.config import get_settings
-from apps.api.observability.tracing import init_tracing
 from apps.api.core.database import init_db
 from apps.api.core.logging_config import setup_logging
 from apps.api.middleware.request_id import RequestTimingAndCorrelationMiddleware
 from apps.api.middleware.security_guardrails import SecurityGuardrailMiddleware
+from apps.api.observability.tracing import init_tracing
 from apps.api.routers import (
     agents_router,
     auth_router,
