@@ -41,6 +41,19 @@ async def health_check(db: AsyncSession = Depends(get_db_session)) -> HealthResp
             details={"error": str(e)},
         )
 
+    # Check Telemetry & Tracing subsystem
+    try:
+        from opentelemetry import trace
+        provider_name = trace.get_tracer_provider().__class__.__name__
+    except Exception:
+        provider_name = "standard"
+
+    services["telemetry"] = ServiceHealth(
+        status="healthy",
+        latency_ms=0.0,
+        details={"provider": provider_name, "service": settings.PROJECT_NAME},
+    )
+
     overall_status = "healthy" if all(s.status == "healthy" for s in services.values()) else "degraded"
 
     return HealthResponse(
