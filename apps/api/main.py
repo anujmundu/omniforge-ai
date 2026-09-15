@@ -8,6 +8,7 @@ from loguru import logger
 
 try:
     from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
     _HAS_OTEL_FASTAPI = True
 except ImportError:
     _HAS_OTEL_FASTAPI = False
@@ -56,7 +57,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 def create_application() -> FastAPI:
     app = FastAPI(
-    # Instrument FastAPI with OpenTelemetry for tracing and metrics
+        # Instrument FastAPI with OpenTelemetry for tracing and metrics
         title=settings.PROJECT_NAME,
         version="1.0.0",
         description="OmniForge — Enterprise Production-Grade Multimodal AI/ML Intelligence Platform API Gateway.",
@@ -138,5 +139,6 @@ def create_application() -> FastAPI:
         except Exception as exc:
             logger.warning(f"OpenTelemetry FastAPI instrumentation skipped: {exc}")
     return app
+
 
 app = create_application()

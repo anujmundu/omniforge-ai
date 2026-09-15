@@ -44,6 +44,7 @@ async def health_check(db: AsyncSession = Depends(get_db_session)) -> HealthResp
     # Check Telemetry & Tracing subsystem
     try:
         from opentelemetry import trace
+
         provider_name = trace.get_tracer_provider().__class__.__name__
     except Exception:
         provider_name = "standard"
