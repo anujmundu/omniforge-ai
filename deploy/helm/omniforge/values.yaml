@@ -4,6 +4,8 @@
 global:
   environment: production
   domain: api.omniforge.ai
+  otlpEndpoint: "http://jaeger-collector:4317"
+  serviceName: "omniforge"
 
 # API Gateway Deployment
 api:
