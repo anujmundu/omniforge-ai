@@ -13,6 +13,8 @@ async def test_health_check_endpoint(client: AsyncClient):
     assert "environment" in data
     assert "database" in data["services"]
     assert data["services"]["database"]["status"] == "healthy"
+    assert "telemetry" in data["services"]
+    assert data["services"]["telemetry"]["status"] == "healthy"
     assert "X-Request-ID" in response.headers
     assert "X-Process-Time-Ms" in response.headers
 
