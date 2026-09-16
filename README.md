@@ -2,6 +2,7 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111+-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://anujmundu-omniforge-ai.streamlit.app)
 [![Docker](https://img.shields.io/badge/Docker-Multi--stage-2496ED.svg?logo=docker)](https://www.docker.com/)
 [![Render](https://img.shields.io/badge/Render-Live%20API-46E3B7.svg?logo=render)](https://omniforge-ai.onrender.com/docs)
 [![API Docs](https://img.shields.io/badge/Swagger%20UI-Live%20Interactive-success.svg?logo=swagger)](https://omniforge-ai.onrender.com/docs)
@@ -18,6 +19,7 @@ OmniForge is deployed in production and actively serving live inferences:
 
 | Service | Live URL | Description |
 | :--- | :--- | :--- |
+| **Interactive UI Control Center** | [https://anujmundu-omniforge-ai.streamlit.app](https://anujmundu-omniforge-ai.streamlit.app) | Streamlit multi-agent playground & visual AI demos |
 | **Interactive Swagger Docs** | [https://omniforge-ai.onrender.com/docs](https://omniforge-ai.onrender.com/docs) | Test all NLP, Vision, ML, & Agent endpoints live |
 | **ReDoc API Contract** | [https://omniforge-ai.onrender.com/redoc](https://omniforge-ai.onrender.com/redoc) | Formal OpenAPI 3.1 specification & schema viewer |
 | **Deep Health & Telemetry** | [https://omniforge-ai.onrender.com/api/v1/health](https://omniforge-ai.onrender.com/api/v1/health) | Real-time database latency & subsystem telemetry |
