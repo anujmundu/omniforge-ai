@@ -122,6 +122,7 @@ Every module in AIForge passes through 12 engineering quality gates:
 - [x] **Phase 3: Computer Vision Engine** — Object Detection (YOLO), Multi-Object Tracking (ByteTrack), Spatial OCR, Async Video Frame Stream Ingestion, and REST APIs.
 - [x] **Phase 4: NLP Pipeline** — Dense Transformer Embeddings, Span-Level NER, Text Classification, Cross-Document Semantic Similarity, and REST APIs.
 - [x] **Phase 5: Enterprise RAG Engine** — Document Ingestion (Markdown/JSON/HTML), Recursive Semantic Chunking, Dense Vector Store Collections, Cross-Encoder Reranking, Citation-Backed Q&A Generation, and Automated Evaluation.
+- [x] **Phase 6: Multi-Agent Orchestration** — ReAct reasoning loops, dynamic tool calling, multi-domain autonomous solvers, supervisor intent routing, and AST-secured code execution.
 - [x] **Phase 7: MLOps & CI/CD Pipelines** — DVC Data Versioning & Pipeline DAGs, MLflow Central Registry & Experiment Tracking, Automated Candidate vs. Champion Regression Evaluation Gates, Zero-Downtime Rollback Safety, and GitHub Actions CI/CD Workflows.
 - [x] **Phase 8: Production Observability** — Prometheus metrics, Evidently data drift monitoring, Grafana dashboards.
 - [x] **Phase 9: Adversarial Security & Red-Teaming** — Multi-layer prompt injection defense, PII/secrets redaction, token-bucket rate limiting, and automated 32-vector red-team audit battery.
@@ -162,7 +163,7 @@ Every module in AIForge passes through 12 engineering quality gates:
    pytest
    ```
 
-5. **Run the Live Demonstrations:**
+5. **Run the Live Demonstrations (All 10 Phases):**
    ```bash
    # Phase 1: End-to-End Foundation & RBAC Lifecycle
    python scripts/demo_e2e_flow.py
@@ -181,17 +182,35 @@ Every module in AIForge passes through 12 engineering quality gates:
 
    # Phase 6: Multi-Agent Orchestrator (Intent Routing, Tool Introspection, ReAct Loops)
    python scripts/demo_phase6_agents.py
+
+   # Phase 7: MLOps & CI/CD Pipelines (DVC DAGs, MLflow Registry, Promotion Gates)
+   python scripts/demo_phase7_mlops.py
+
+   # Phase 8: Production Observability (Prometheus Metrics, Evidently Data Drift, Grafana)
+   python scripts/demo_phase8_observability.py
+
+   # Phase 9: Adversarial Security & Red-Teaming (Prompt Injection Defenses, PII Redaction, Rate Limiting)
+   python scripts/demo_phase9_security.py
+
+   # Phase 10: Cloud Deployment & Scaling (Celery/Redis Task Mesh, Worker Pool Autoscaling, Helm)
+   python scripts/demo_phase10_scaling.py
    ```
 
-6. **Start the API server:**
+6. **Start the API Server and Streamlit Dashboard:**
    ```bash
+   # Terminal 1: Launch FastAPI Backend Gateway
    uvicorn apps.api.main:app --reload --port 8000
+
+   # Terminal 2: Launch Interactive Streamlit Control Center
+   streamlit run apps/dashboard/app.py
    ```
 
-7. **Explore interactive documentation:**
+7. **Explore interactive documentation & live UI:**
+   - **Live Streamlit Dashboard**: [https://anujmundu-omniforge-ai.streamlit.app](https://anujmundu-omniforge-ai.streamlit.app)
    - **Production Swagger UI**: [https://omniforge-ai.onrender.com/docs](https://omniforge-ai.onrender.com/docs)
    - **Production ReDoc**: [https://omniforge-ai.onrender.com/redoc](https://omniforge-ai.onrender.com/redoc)
    - **Production Health Check**: [https://omniforge-ai.onrender.com/api/v1/health](https://omniforge-ai.onrender.com/api/v1/health)
+   - Local Streamlit Dashboard: [http://localhost:8501](http://localhost:8501)
    - Local Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ### Running with Docker Compose
