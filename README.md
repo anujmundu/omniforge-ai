@@ -2,11 +2,26 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111+-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791.svg?logo=postgresql)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker-Multi--stage-2496ED.svg?logo=docker)](https://www.docker.com/)
+[![Render](https://img.shields.io/badge/Render-Live%20API-46E3B7.svg?logo=render)](https://omniforge-ai.onrender.com/docs)
+[![API Docs](https://img.shields.io/badge/Swagger%20UI-Live%20Interactive-success.svg?logo=swagger)](https://omniforge-ai.onrender.com/docs)
+[![Health Check](https://img.shields.io/badge/API%20Health-Passing%20200%20OK-brightgreen.svg)](https://omniforge-ai.onrender.com/api/v1/health)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **OmniForge** is an enterprise-grade multimodal AI/ML intelligence platform engineered from first principles. It unifies **Classical Machine Learning**, **Deep Learning / Computer Vision**, **Natural Language Processing**, **Enterprise Retrieval-Augmented Generation (RAG)**, and **Multi-Agent Orchestration** behind a resilient, observable asynchronous API layer.
+
+---
+
+### 🚀 Live Production Deployment
+
+OmniForge is deployed in production and actively serving live inferences:
+
+| Service | Live URL | Description |
+| :--- | :--- | :--- |
+| **Interactive Swagger Docs** | [https://omniforge-ai.onrender.com/docs](https://omniforge-ai.onrender.com/docs) | Test all NLP, Vision, ML, & Agent endpoints live |
+| **ReDoc API Contract** | [https://omniforge-ai.onrender.com/redoc](https://omniforge-ai.onrender.com/redoc) | Formal OpenAPI 3.1 specification & schema viewer |
+| **Deep Health & Telemetry** | [https://omniforge-ai.onrender.com/api/v1/health](https://omniforge-ai.onrender.com/api/v1/health) | Real-time database latency & subsystem telemetry |
+| **Production API Gateway** | [https://omniforge-ai.onrender.com](https://omniforge-ai.onrender.com) | Core asynchronous FastAPI gateway |
 
 ---
 
@@ -172,9 +187,10 @@ Every module in AIForge passes through 12 engineering quality gates:
    ```
 
 7. **Explore interactive documentation:**
-   - Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
-   - ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
-   - Health Check: [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
+   - **Production Swagger UI**: [https://omniforge-ai.onrender.com/docs](https://omniforge-ai.onrender.com/docs)
+   - **Production ReDoc**: [https://omniforge-ai.onrender.com/redoc](https://omniforge-ai.onrender.com/redoc)
+   - **Production Health Check**: [https://omniforge-ai.onrender.com/api/v1/health](https://omniforge-ai.onrender.com/api/v1/health)
+   - Local Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ### Running with Docker Compose
 
