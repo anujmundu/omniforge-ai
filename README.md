@@ -7,6 +7,7 @@
 [![Render](https://img.shields.io/badge/Render-Live%20API-46E3B7.svg?logo=render)](https://omniforge-ai.onrender.com/docs)
 [![API Docs](https://img.shields.io/badge/Swagger%20UI-Live%20Interactive-success.svg?logo=swagger)](https://omniforge-ai.onrender.com/docs)
 [![Health Check](https://img.shields.io/badge/API%20Health-Passing%20200%20OK-brightgreen.svg)](https://omniforge-ai.onrender.com/api/v1/health)
+[![OmniForge AI System Status](https://badge.uptimerobot.com/psp/07e745df823bef9fcc9a98245b24b76e.svg?style=logo&theme=light)](https://stats.uptimerobot.com/1TjFtWgELJ)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **OmniForge** is an enterprise-grade multimodal AI/ML intelligence platform engineered from first principles. It unifies **Classical Machine Learning**, **Deep Learning / Computer Vision**, **Natural Language Processing**, **Enterprise Retrieval-Augmented Generation (RAG)**, and **Multi-Agent Orchestration** behind a resilient, observable asynchronous API layer.
@@ -24,6 +25,7 @@ OmniForge is deployed in production and actively serving live inferences:
 | **ReDoc API Contract** | [https://omniforge-ai.onrender.com/redoc](https://omniforge-ai.onrender.com/redoc) | Formal OpenAPI 3.1 specification & schema viewer |
 | **Deep Health & Telemetry** | [https://omniforge-ai.onrender.com/api/v1/health](https://omniforge-ai.onrender.com/api/v1/health) | Real-time database latency & subsystem telemetry |
 | **Production API Gateway** | [https://omniforge-ai.onrender.com](https://omniforge-ai.onrender.com) | Core asynchronous FastAPI gateway |
+| **Live 24/7 System Status** | [https://stats.uptimerobot.com/1TjFtWgELJ](https://stats.uptimerobot.com/1TjFtWgELJ) | Real-time uptime monitoring, SLA & health metrics |
 
 ---
 
@@ -210,6 +212,7 @@ Every module in AIForge passes through 12 engineering quality gates:
    - **Production Swagger UI**: [https://omniforge-ai.onrender.com/docs](https://omniforge-ai.onrender.com/docs)
    - **Production ReDoc**: [https://omniforge-ai.onrender.com/redoc](https://omniforge-ai.onrender.com/redoc)
    - **Production Health Check**: [https://omniforge-ai.onrender.com/api/v1/health](https://omniforge-ai.onrender.com/api/v1/health)
+   - **Live 24/7 Status Page**: [https://stats.uptimerobot.com/1TjFtWgELJ](https://stats.uptimerobot.com/1TjFtWgELJ)
    - Local Streamlit Dashboard: [http://localhost:8501](http://localhost:8501)
    - Local Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
 
